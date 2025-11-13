@@ -1,7 +1,21 @@
 {
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
+
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
-    ]
+    ],
+
+    // *** IMPORTANT: Force VS Code to use Java 8 ***
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-1.8",
+            "path": "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home",
+            "default": true
+        }
+    ],
+
+    // *** Also force Java language server to use Java 8 ***
+    "java.jdt.ls.java.home": "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home"
 }
+

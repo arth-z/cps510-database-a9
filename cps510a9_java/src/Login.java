@@ -34,21 +34,17 @@ public class Login extends JPanel {
             String user = userField.getText();
             String pass = new String(passField.getPassword());
 
-            System.out.println(user); 
-            System.out.println(pass);
-
             try {
-                System.out.println(DBConnection.getInstance(user, pass));
                 DBConnection.getInstance(user, pass);
 
                 JOptionPane.showMessageDialog(this, 
-                    "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    "Credentials Entry Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 gui.showMainMenu();
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this,
-                    "Login failed. Check your credentials.",
+                    "Credentials Entry failed. Check your credentials.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             }
