@@ -5,8 +5,8 @@ public class DBConnection {
 
     /* Credentials to log into Oracle database */
     private final String url = "jdbc:oracle:thin:@oracle.cs.torontomu.ca:1521:orcl";
-    private final String username = "username";
-    private final String password = "password";
+    private String username;
+    private String password;
 
     /* Create an instance of DBConnection */
     private static DBConnection connectionInstance; 
@@ -15,7 +15,10 @@ public class DBConnection {
     private Connection connection;
 
     /* Constructor to prevent direct instantiation */
-    private DBConnection() throws SQLException {
+    private DBConnection(String username, String password) throws SQLException {
+        this.username = username;
+        this.password = password;   
+
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             this.connection = DriverManager.getConnection(url, username, password);
@@ -28,9 +31,9 @@ public class DBConnection {
     }
 
     /* Gets instance of the database connection */
-    public static DBConnection getInstance() throws SQLException {
+    public static DBConnection getInstance(String username, String password) throws SQLException {
         if (connectionInstance == null) {
-            connectionInstance = new DBConnection();
+            connectionInstance = new DBConnection(username, password);
         } 
         return connectionInstance;
     }
@@ -86,8 +89,5 @@ public class DBConnection {
             throw e;
         }
     }
-
-
-
     
 }

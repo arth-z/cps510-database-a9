@@ -1,0 +1,58 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Login extends JPanel {
+
+    public Login(DB_GUI gui) {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        JLabel userLabel = new JLabel("Username:");
+        JLabel passLabel = new JLabel("Password:");
+
+        JTextField userField = new JTextField(15);
+        JPasswordField passField = new JPasswordField(15);
+
+        JButton loginButton = new JButton("Login");
+
+        gbc.gridx = 0; gbc.gridy = 0;
+        add(userLabel, gbc);
+        gbc.gridx = 1;
+        add(userField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(passLabel, gbc);
+        gbc.gridx = 1;
+        add(passField, gbc);
+
+        gbc.gridx = 1; gbc.gridy = 2;
+        add(loginButton, gbc);
+
+        loginButton.addActionListener(e -> {
+            String user = userField.getText();
+            String pass = new String(passField.getPassword());
+
+            System.out.println(user); 
+            System.out.println(pass);
+
+            try {
+                System.out.println(DBConnection.getInstance(user, pass));
+                DBConnection.getInstance(user, pass);
+
+                JOptionPane.showMessageDialog(this, 
+                    "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                gui.showMainMenu();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                    "Login failed. Check your credentials.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+}
+
