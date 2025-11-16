@@ -61,6 +61,7 @@ public class DB_GUI extends JFrame {
         populateButton.addActionListener(e -> showPopulateTables());
         // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
         queryButton.addActionListener(e -> showQueryTables());
+        viewButton.addActionListener(e -> showViewTables());
         exitButton.addActionListener(e -> System.exit(0));
 
         menuPanel.add(buttonPanel, BorderLayout.CENTER);
@@ -145,17 +146,30 @@ public class DB_GUI extends JFrame {
     }
 
     public void showQueryTables() {
-    try {
-        QueryTables queryTablesPanel = new QueryTables(this, username, password);
-        mainPanel.add(queryTablesPanel, "QueryTables");
-        cardLayout.show(mainPanel, "QueryTables");
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this,
-            "Error loading QueryTables panel: " + e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
+        try {
+            QueryTables queryTablesPanel = new QueryTables(this, username, password);
+            mainPanel.add(queryTablesPanel, "QueryTables");
+            cardLayout.show(mainPanel, "QueryTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading QueryTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
-}
+
+    public void showViewTables() {
+        try {
+            ViewTables viewTablesPanel = new ViewTables(this, username, password);
+            mainPanel.add(viewTablesPanel, "ViewTables");
+            cardLayout.show(mainPanel, "ViewTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading ViewTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     public void setCredentials(String username, String password) {
         this.username = username;
