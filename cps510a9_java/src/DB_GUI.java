@@ -26,19 +26,6 @@ public class DB_GUI extends JFrame {
         JPanel mainMenu = createMainMenu();
         mainPanel.add(mainMenu, "mainmenu");
         mainPanel.setBackground(Color.BLUE);
-
-        // try {
-        //     mainPanel.add(new CreateTables(this, username, password), "Create Tables");
-        // } catch (SQLException e) {
-        //     e.printStackTrace();
-        //     JOptionPane.showMessageDialog(this,
-        //         "Error initializing CreateTables panel:\n" + e.getMessage(),"Database Error", JOptionPane.ERROR_MESSAGE);
-        // }
-        // mainPanel.add(new DropTables(this), "Drop Tables");
-        // mainPanel.add(new PopulateTables(this), "Populate Tables");
-        // mainPanel.add(new ViewTables(this), "View Tables");
-        // mainPanel.add(new QueryTables(this), "Query Tables");
-        // mainPanel.add(new CustomSQL(this), "Custom SQL");
             
         add(mainPanel); 
         cardLayout.show(mainPanel, "login");
@@ -71,7 +58,7 @@ public class DB_GUI extends JFrame {
 
         // Add action listeners for navigation
         createButton.addActionListener(e -> showCreateTables());
-        // dropButton.addActionListener(e -> cardLayout.show(mainPanel, "Drop Tables"));
+        dropButton.addActionListener(e -> showDropTables());
         // populateButton.addActionListener(e -> cardLayout.show(mainPanel, "Populate Tables"));
         // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
         // queryButton.addActionListener(e -> cardLayout.show(mainPanel, "Query Tables"));
@@ -128,6 +115,19 @@ public class DB_GUI extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                 "Error loading CreateTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void showDropTables() {
+        try {
+            DropTables dropTablesPanel = new DropTables(this, username, password);
+            mainPanel.add(dropTablesPanel, "DropTables");
+            cardLayout.show(mainPanel, "DropTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading DropTables panel: " + e.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         }
