@@ -129,7 +129,7 @@ public class ViewTables extends JPanel {
                 "WHERE JobApplication.applicantID = JobApplicant.applicantID AND JobApplication.jobID = Job.jobID AND Job.companyID = Company.companyID";
         
         String view9 = 
-            "CREATE or REPLACEVIEW RecruiterInterview AS " +
+            "CREATE or REPLACE VIEW RecruiterInterview AS " +
                 "SELECT Recruiter.recruiterID, Recruiter.last_name, Recruiter.first_name, Company.name AS companyName, Job.title, Interview.dateTime " +
                 "FROM Recruiter, Company, Interview, JobApplication, Job " +
                 "WHERE Recruiter.companyID = Company.companyID AND Job.recruiterID = Recruiter.recruiterID AND Job.jobID = JobApplication.jobID AND JobApplication.jobAppID = Interview.jobAppID";
