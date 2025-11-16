@@ -164,6 +164,19 @@ public class DB_GUI extends JFrame {
         this.password = password;
     }
 
+    public void addOutputPanel(String name, JTextArea outputArea) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JScrollPane(outputArea), BorderLayout.CENTER);
+
+        JButton backButton = new JButton("Back");
+        backButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        backButton.addActionListener(ev -> showMainMenu());
+        panel.add(backButton, BorderLayout.SOUTH);
+
+        mainPanel.add(panel, name);
+        cardLayout.show(mainPanel, name);
+    }
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             DB_GUI gui = new DB_GUI();
