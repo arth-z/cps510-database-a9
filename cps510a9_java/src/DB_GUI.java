@@ -59,7 +59,7 @@ public class DB_GUI extends JFrame {
         // Add action listeners for navigation
         createButton.addActionListener(e -> showCreateTables());
         dropButton.addActionListener(e -> showDropTables());
-        // populateButton.addActionListener(e -> cardLayout.show(mainPanel, "Populate Tables"));
+        populateButton.addActionListener(e -> showPopulateTables());
         // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
         // queryButton.addActionListener(e -> cardLayout.show(mainPanel, "Query Tables"));
         // SQLButton.addActionListener(e -> cardLayout.show(mainPanel, "Custom SQL"));
@@ -128,6 +128,19 @@ public class DB_GUI extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                 "Error loading DropTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void showPopulateTables() {
+        try {
+            PopulateTables populateTablesPanel = new PopulateTables(this, username, password);
+            mainPanel.add(populateTablesPanel, "PopulateTables");
+            cardLayout.show(mainPanel, "PopulateTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading PopulateTables panel: " + e.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         }

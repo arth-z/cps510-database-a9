@@ -26,7 +26,7 @@ public class DropTables extends JPanel{
                 try {
                     dbConnection.executeUpdate("DROP TABLE " + table + " CASCADE CONSTRAINTS");
                 } catch (SQLException ex) {
-                    // Ignore "table does not exist", but log other issues
+                    /* Ignore "table does not exist", but log other issues */
                     if (!ex.getMessage().contains("ORA-00942")) {
                         allSuccessful = false;
                         errors.append("Failed to drop table ").append(table)
