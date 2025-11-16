@@ -63,6 +63,12 @@ public class DBConnection {
         }
     }
 
+    /* Execute SELECT query and return the ResultSet */
+    public ResultSet executeQuery(String query) throws SQLException {
+        Statement statement = this.connection.createStatement();
+        return statement.executeQuery(query);
+    }
+
     /* Commit the actions */
     public void commit() throws SQLException {
         if (this.connection != null) { 

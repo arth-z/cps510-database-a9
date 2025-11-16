@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -7,30 +9,133 @@ import java.util.*;
 public class DB_GUI extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    private String username;
+    private String password;
 
     public DB_GUI() {
-       setTitle("Online Job Bank System");
-       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       setSize(800, 600);
-       setLocationRelativeTo(null);
+        setTitle("Online Job Bank System");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
+        setLocationRelativeTo(null);
 
-       cardLayout = new CardLayout();
-       mainPanel = new JPanel(cardLayout);
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
 
-       mainPanel.add(new Login(this), "login");
+        mainPanel.add(new Login(this), "login");
 
-       JPanel mainMenu = new JPanel();
-       mainMenu.add(new JLabel("Main Menu"));
-       mainPanel.add(mainMenu, "mainmenu");
-       
+        JPanel mainMenu = createMainMenu();
+        mainPanel.add(mainMenu, "mainmenu");
+        mainPanel.setBackground(Color.BLUE);
 
+        // try {
+        //     mainPanel.add(new CreateTables(this, username, password), "Create Tables");
+        // } catch (SQLException e) {
+        //     e.printStackTrace();
+        //     JOptionPane.showMessageDialog(this,
+        //         "Error initializing CreateTables panel:\n" + e.getMessage(),"Database Error", JOptionPane.ERROR_MESSAGE);
+        // }
+        // mainPanel.add(new DropTables(this), "Drop Tables");
+        // mainPanel.add(new PopulateTables(this), "Populate Tables");
+        // mainPanel.add(new ViewTables(this), "View Tables");
+        // mainPanel.add(new QueryTables(this), "Query Tables");
+        // mainPanel.add(new CustomSQL(this), "Custom SQL");
+            
+        add(mainPanel); 
+        cardLayout.show(mainPanel, "login");
+    }
 
-       add(mainPanel); 
-       cardLayout.show(mainPanel, "login");
+    private JPanel createMainMenu() {
+        JPanel menuPanel = new JPanel(new BorderLayout());
+        JLabel titleLabel = new JLabel("ONLINE JOB BANK SYSTEM", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        menuPanel.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        Color LightBlue = new Color(173, 216, 230);
+
+        JButton createButton = new JButton("Create Tables");
+        JButton dropButton = new JButton("Drop Tables");
+        JButton populateButton = new JButton("Populate Tables");
+        JButton viewButton = new JButton("View Tables");
+        JButton queryButton = new JButton("Query Tables");
+        JButton SQLButton = new JButton("Custom SQL");
+        JButton exitButton = new JButton("Exit");
+
+        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, SQLButton, exitButton};
+
+        for (JButton button : buttons) {
+            button.setFont(new Font("Times New Roman", Font.BOLD, 20));
+            button.setBackground(LightBlue);
+            buttonPanel.add(button);
+        }
+
+        // Add action listeners for navigation
+        createButton.addActionListener(e -> showCreateTables());
+        // dropButton.addActionListener(e -> cardLayout.show(mainPanel, "Drop Tables"));
+        // populateButton.addActionListener(e -> cardLayout.show(mainPanel, "Populate Tables"));
+        // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
+        // queryButton.addActionListener(e -> cardLayout.show(mainPanel, "Query Tables"));
+        // SQLButton.addActionListener(e -> cardLayout.show(mainPanel, "Custom SQL"));
+        exitButton.addActionListener(e -> System.exit(0));
+
+        menuPanel.add(buttonPanel, BorderLayout.CENTER);
+        return menuPanel; 
+
+    }
+
+    public static void executeButtonActionEvent(JButton tableButton, DBConnection databaseConnection, String query) {
+        tableButton.addActionListener(actionEvent -> {
+            try {
+                ResultSet queryResult = databaseConnection.executeQuery(query);
+                JTable queryResultTable = new JTable(buildTableModel(queryResult));
+                JOptionPane.showMessageDialog(null, new JScrollPane(queryResultTable));
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static DefaultTableModel buildTableModel(ResultSet queryResult) throws SQLException {
+
+        ResultSetMetaData queryMetaData = queryResult.getMetaData();
+        int columnCount = queryMetaData.getColumnCount();
+        Vector<String> columnNames = new Vector<>();
+        Vector<Vector<Object>> queryDataVector = new Vector<>();
+
+        for (int columnNumber = 1; columnNumber <= columnCount; columnNumber++) {
+            columnNames.add(queryMetaData.getColumnName(columnNumber));
+        }
+
+        while (queryResult.next()) {
+            Vector<Object> tempDataVector = new Vector<>();
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                tempDataVector.add(queryResult.getObject(columnIndex));
+            }
+            queryDataVector.add(tempDataVector);
+        }
+        return new DefaultTableModel(queryDataVector, columnNames);
     }
 
     public void showMainMenu() {
         cardLayout.show(mainPanel, "mainmenu");
+    }
+    public void showCreateTables() {
+        try {
+            CreateTables createTablesPanel = new CreateTables(this, username, password);
+            mainPanel.add(createTablesPanel, "CreateTables");
+            cardLayout.show(mainPanel, "CreateTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading CreateTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void setCredentials(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public static void main(String[] args) {

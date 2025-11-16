@@ -9,8 +9,8 @@ public class Login extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        JLabel userLabel = new JLabel("Username:");
-        JLabel passLabel = new JLabel("Password:");
+        JLabel userLabel = new JLabel("Oracle Username:");
+        JLabel passLabel = new JLabel("Oracle Password:");
 
         JTextField userField = new JTextField(15);
         JPasswordField passField = new JPasswordField(15);
@@ -37,16 +37,13 @@ public class Login extends JPanel {
             try {
                 DBConnection.getInstance(user, pass);
 
-                JOptionPane.showMessageDialog(this, 
-                    "Credentials Entry Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Credentials Entry Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
+                gui.setCredentials(user, pass);
                 gui.showMainMenu();
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                    "Credentials Entry failed. Check your credentials.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Credentials Entry failed. Check your credentials.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
