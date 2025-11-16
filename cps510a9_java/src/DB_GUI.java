@@ -45,10 +45,9 @@ public class DB_GUI extends JFrame {
         JButton populateButton = new JButton("Populate Tables");
         JButton viewButton = new JButton("View Tables");
         JButton queryButton = new JButton("Query Tables");
-        JButton SQLButton = new JButton("Custom SQL");
         JButton exitButton = new JButton("Exit");
 
-        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, SQLButton, exitButton};
+        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, exitButton};
 
         for (JButton button : buttons) {
             button.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -62,7 +61,6 @@ public class DB_GUI extends JFrame {
         populateButton.addActionListener(e -> showPopulateTables());
         // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
         queryButton.addActionListener(e -> showQueryTables());
-        // SQLButton.addActionListener(e -> cardLayout.show(mainPanel, "Custom SQL"));
         exitButton.addActionListener(e -> System.exit(0));
 
         menuPanel.add(buttonPanel, BorderLayout.CENTER);
@@ -176,7 +174,7 @@ public class DB_GUI extends JFrame {
         mainPanel.add(panel, name);
         cardLayout.show(mainPanel, name);
     }
-    
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             DB_GUI gui = new DB_GUI();
