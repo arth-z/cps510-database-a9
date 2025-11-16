@@ -18,24 +18,21 @@ public class DropTables extends JPanel{
         JButton executeButton = new JButton("Drop Tables (Default)");
         executeButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
         executeButton.addActionListener(e -> {
+            String[] tables = {"Interview", "Resume", "JobApplication", "JobApplicant", "Job", "Recruiter", "Company"};
             boolean allSuccessful = true;
             StringBuilder errors = new StringBuilder();
-
-            // Get the current connection object from dbConnection
-            Connection connection = dbConnection.getConnection();
-
-            try {
-                // Table drop statements
-                dbConnection.executeUpdate("DROP TABLE Interview CASCADE CONSTRAINTS");
-                dbConnection.executeUpdate("DROP TABLE Resume CASCADE CONSTRAINTS");
-                dbConnection.executeUpdate("DROP TABLE JobApplication CASCADE CONSTRAINTS");
-                dbConnection.executeUpdate("DROP TABLE JobApplicant CASCADE CONSTRAINTS");
-                dbConnection.executeUpdate("DROP TABLE Job CASCADE CONSTRAINTS");
-                dbConnection.executeUpdate("DROP TABLE Recruiter CASCADE CONSTRAINTS");
-                dbConnection.executeUpdate("DROP TABLE Company CASCADE CONSTRAINTS");
-            } catch (SQLException ex) {
-                allSuccessful = false;
-                errors.append(ex.getMessage()).append("\n");
+            
+            for (String table : tables) {
+                try {
+                    dbConnection.executeUpdate("DROP TABLE " + table + " CASCADE CONSTRAINTS");
+                } catch (SQLException ex) {
+                    // Ignore "table does not exist", but log other issues
+                    if (!ex.getMessage().contains("ORA-00942")) {
+                        allSuccessful = false;
+                        errors.append("Failed to drop table ").append(table)
+                            .append(": ").append(ex.getMessage()).append("\n");
+                    }
+                }
             }
 
             if (allSuccessful) {

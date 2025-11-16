@@ -53,7 +53,7 @@ public class CreateTables extends JPanel {
                         + "location      VARCHAR(200), "
                         + "title         VARCHAR(100) NOT NULL, "
                         + "description   VARCHAR(500) NOT NULL, "
-                        + "FOREIGN KEY (companyID) REFERENCES Company (companyID) "
+                        + "FOREIGN KEY (companyID) REFERENCES Company (companyID), "
                         + "FOREIGN KEY (recruiterID) REFERENCES Recruiter (recruiterID) "
                         + ")");
                     dbConnection.executeUpdate("CREATE TABLE JobApplicant (" 
@@ -64,7 +64,7 @@ public class CreateTables extends JPanel {
                         + "birthdate     DATE, "
                         + "address       VARCHAR(200), "
                         + "email         VARCHAR(100), "
-                        + "phone         VARCHAR(20), "
+                        + "phone         VARCHAR(20) "
                         + ")");
                     dbConnection.executeUpdate("CREATE TABLE JobApplication (" 
                         + "jobAppID      INTEGER PRIMARY KEY, "
