@@ -61,7 +61,7 @@ public class DB_GUI extends JFrame {
         dropButton.addActionListener(e -> showDropTables());
         populateButton.addActionListener(e -> showPopulateTables());
         // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
-        // queryButton.addActionListener(e -> cardLayout.show(mainPanel, "Query Tables"));
+        queryButton.addActionListener(e -> showQueryTables());
         // SQLButton.addActionListener(e -> cardLayout.show(mainPanel, "Custom SQL"));
         exitButton.addActionListener(e -> System.exit(0));
 
@@ -145,6 +145,19 @@ public class DB_GUI extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public void showQueryTables() {
+    try {
+        QueryTables queryTablesPanel = new QueryTables(this, username, password);
+        mainPanel.add(queryTablesPanel, "QueryTables");
+        cardLayout.show(mainPanel, "QueryTables");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this,
+            "Error loading QueryTables panel: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+    }
+}
 
     public void setCredentials(String username, String password) {
         this.username = username;
