@@ -21,13 +21,11 @@ public class ViewTables extends JPanel {
         JButton q2 = new JButton("View all scheduled interviews with job and applicant details");
         JButton q3 = new JButton("View of job postings each company and recruiter has");
         JButton q4 = new JButton("View of jobs with additional analytics info applied");
-        JButton q5 = new JButton("View of recruiters with additional analytic info applied");
-        JButton q6 = new JButton("View of applicants with interviews, listing company and date");
-        JButton q7 = new JButton("View of job application details, showing company/job/title/status");
-        JButton q8 = new JButton("View of recruiters, their companies, and interviews for jobs they manage");
-        JButton q9 = new JButton("View of active applicants");
-
-
+        JButton q5 = new JButton("View of active applicants");
+        JButton q6 = new JButton("View of recruiters with additional analytic info applied");
+        JButton q7 = new JButton("View of applicants with interviews, listing company and date");
+        JButton q8 = new JButton("View of job application details, showing company/job/title/status");
+        JButton q9 = new JButton("View of recruiters, their companies, and interviews for jobs they manage");
 
         JButton[] buttons = {q1, q2, q3, q4, q5, q6, q7, q8, q9};
         for (JButton b : buttons) {
@@ -68,7 +66,7 @@ public class ViewTables extends JPanel {
                 "FROM Interview i, JobApplication ja, Job j, Recruiter r, JobApplicant a " +
                 "WHERE i.jobAppID = ja.jobAppID " +
                     "AND ja.jobID = j.jobID " +
-                    "AND ja.applicantID = a.applicantID" +
+                    "AND ja.applicantID = a.applicantID " +
                     "AND j.recruiterID = r.recruiterID";  
 
         String view3 =
@@ -125,13 +123,13 @@ public class ViewTables extends JPanel {
                 "WHERE JobApplicant.applicantID = JobApplication.applicantID AND JobApplication.jobAppID = Interview.jobAppID AND JobApplication.jobID = Job.jobID AND Job.companyID = Company.companyID";
 
         String view8 =
-            "CREATE VIEW JobApplicationDetails AS " +
+            "CREATE or REPLACE VIEW JobApplicationDetails AS " +
                 "SELECT JobApplication.jobAppID, JobApplicant.last_name, JobApplicant.first_name, Job.title, Company.name as companyName, JobApplication.status " +
                 "FROM JobApplication, JobApplicant, Job, Company " +
                 "WHERE JobApplication.applicantID = JobApplicant.applicantID AND JobApplication.jobID = Job.jobID AND Job.companyID = Company.companyID";
         
         String view9 = 
-            "CREATE VIEW RecruiterInterview AS " +
+            "CREATE or REPLACEVIEW RecruiterInterview AS " +
                 "SELECT Recruiter.recruiterID, Recruiter.last_name, Recruiter.first_name, Company.name AS companyName, Job.title, Interview.dateTime " +
                 "FROM Recruiter, Company, Interview, JobApplication, Job " +
                 "WHERE Recruiter.companyID = Company.companyID AND Job.recruiterID = Recruiter.recruiterID AND Job.jobID = JobApplication.jobID AND JobApplication.jobAppID = Interview.jobAppID";
