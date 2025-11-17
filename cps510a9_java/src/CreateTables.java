@@ -105,7 +105,7 @@ public class CreateTables extends JPanel {
                 executeAndLog("CREATE TABLE Resume (" 
                     + "resumeID      INTEGER PRIMARY KEY, "
                     + "applicantID   INTEGER NOT NULL, "
-                    + "upload_file   BLOB NOT NULL, "
+                    + "uploadFile   BLOB NOT NULL, "
                     + "uploadDate    DATE DEFAULT SYSDATE NOT NULL, "
                     + "FOREIGN KEY (applicantID) REFERENCES JobApplicant (applicantID)"
                     + ")", "Table 'Resume' created successfully.");

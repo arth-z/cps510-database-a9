@@ -45,9 +45,12 @@ public class DB_GUI extends JFrame {
         JButton populateButton = new JButton("Populate Tables");
         JButton viewButton = new JButton("View Tables");
         JButton queryButton = new JButton("Query Tables");
+        JButton modifyButton = new JButton("Modify Tables");
+        JButton addButton = new JButton("Add to Tables");
+        JButton deleteButton = new JButton("Delete from Tables");
         JButton exitButton = new JButton("Exit");
 
-        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, exitButton};
+        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, modifyButton, addButton, deleteButton, exitButton};
 
         for (JButton button : buttons) {
             button.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -62,6 +65,9 @@ public class DB_GUI extends JFrame {
         // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
         queryButton.addActionListener(e -> showQueryTables());
         viewButton.addActionListener(e -> showViewTables());
+        modifyButton.addActionListener(e -> showModifyTables());
+        addButton.addActionListener(e -> showAddToTables());
+        deleteButton.addActionListener(e -> showDeleteFromTables());
         exitButton.addActionListener(e -> System.exit(0));
 
         menuPanel.add(buttonPanel, BorderLayout.CENTER);
@@ -169,6 +175,36 @@ public class DB_GUI extends JFrame {
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void showModifyTables() {
+        try {
+            ModifyTables modifyTablesPanel = new ModifyTables(this, username, password);
+            mainPanel.add(modifyTablesPanel, "ModifyTables");
+            cardLayout.show(mainPanel, "ModifyTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading ModifyTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void showAddToTables() {
+        try {
+            AddToTables modifyTablesPanel = new AddToTables(this, username, password);
+            mainPanel.add(modifyTablesPanel, "AddToTables");
+            cardLayout.show(mainPanel, "AddToTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading AddToTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void showDeleteFromTables() {
+        // nothing here yet
     }
 
     public void setCredentials(String username, String password) {
