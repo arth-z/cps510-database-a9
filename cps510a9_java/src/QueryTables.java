@@ -31,7 +31,7 @@ public class QueryTables extends JPanel {
         JButton q9 = new JButton("Job applicants that have applied for at least one job, but have never been interviewed");
         JButton q10 = new JButton("Average salary of all jobs posted, including the minimum and maximum salaries of the jobs posted by the company");
 
-        //Add the buttons to the panel to the panel and style the font
+        //Add the buttons to the panel and style the font
         JButton[] buttons = {q1, q2, q3, q4, q5, q6, q7, q8, q9, q10};
         for (JButton b : buttons) {
             b.setFont(new Font("Times New Roman", Font.BOLD, 18));
