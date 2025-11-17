@@ -73,7 +73,7 @@ public class ViewTables extends JPanel {
             "CREATE or REPLACE VIEW CompanyJobSummary AS " +
                 "SELECT " +
                     "c.name AS company_name, " +
-                    "r.first_name  ' '  r.last_name AS recruiter_name, " +
+                    "r.first_name || ' ' || r.last_name AS recruiter_name, " +
                     "COUNT(j.jobID) AS total_jobs_posted " +
                 "FROM Company c, Job j, Recruiter r " +
                 "WHERE c.companyID = j.companyID " +

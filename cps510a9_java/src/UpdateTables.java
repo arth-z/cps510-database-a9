@@ -179,6 +179,7 @@ public class UpdateTables extends JPanel {
                 JTextField companyID = new JTextField();
                 JTextField recruiterID = new JTextField();
                 JTextField salary = new JTextField();
+                JTextField workingHours = new JTextField();    
                 JTextField datePosted = new JTextField();
                 JTextField location = new JTextField();
                 JTextField title = new JTextField();
@@ -189,6 +190,7 @@ public class UpdateTables extends JPanel {
                     "New CompanyID (mandatory, reference to Company table):", companyID,
                     "New RecruiterID (mandatory, reference to Recruiter table):", recruiterID,
                     "New Salary:", salary,
+                    "New Working Hours: ", workingHours,
                     "New Date Posted (YYYY-MM-DD):", datePosted,
                     "New Location:", location,
                     "New Title (mandatory):", title,
@@ -198,17 +200,18 @@ public class UpdateTables extends JPanel {
                 int option = JOptionPane.showConfirmDialog(null, queryValues, "Update Job", JOptionPane.OK_CANCEL_OPTION);
 
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "UPDATE Job SET companyID = ?, recruiterID = ?, salary = ?, datePosted = ?, location = ?, title = ?, description = ? WHERE jobID = ?";
+                    String insertSQL = "UPDATE Job SET companyID = ?, recruiterID = ?, salary = ?, workingHours = ?, datePosted = ?, location = ?, title = ?, description = ? WHERE jobID = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
                     // the following here go into the question marks of the prepared statem in order, basically
-                    pstmt.setInt(8, Integer.parseInt(jobID.getText()));
+                    pstmt.setInt(9, Integer.parseInt(jobID.getText()));
                     pstmt.setInt(1, Integer.parseInt(companyID.getText()));
                     pstmt.setInt(2, Integer.parseInt(recruiterID.getText()));
-                    pstmt.setInt(3, Integer.parseInt(salary.getText()));
-                    pstmt.setDate(4, Date.valueOf(datePosted.getText()));
-                    pstmt.setString(5, location.getText());
-                    pstmt.setString(6, title.getText());
-                    pstmt.setString(7, description.getText());
+                    pstmt.setFloat(3, salary.getText() == null || salary.getText().isEmpty() ? 0 : Float.parseFloat(salary.getText()));
+                    pstmt.setFloat(4, workingHours.getText() == null || workingHours.getText().isEmpty() ? 0 : Float.parseFloat(workingHours.getText()));
+                    pstmt.setDate(5, Date.valueOf(datePosted.getText()));
+                    pstmt.setString(6, location.getText());
+                    pstmt.setString(7, title.getText());
+                    pstmt.setString(8, description.getText());
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
