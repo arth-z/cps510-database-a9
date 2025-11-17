@@ -7,8 +7,9 @@ public class DeleteFromTables extends JPanel {
     private final DBConnection dbConnection;
 
     public DeleteFromTables(DB_GUI gui, String username, String password) throws SQLException {
-        this.dbConnection = DBConnection.getInstance(username, password);
+        this.dbConnection = DBConnection.getInstance(username, password); // connect to the DB
 
+        // set up the GUI
         setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Delete From Tables", SwingConstants.CENTER);
@@ -46,6 +47,7 @@ public class DeleteFromTables extends JPanel {
         String query6 = "SELECT * FROM Resume";
         String query7 = "SELECT * FROM Interview";
 
+        // attach the *same* functionality to each button, just different table and query
         attachButton(t1, query1, "company");
         attachButton(t2, query2, "recruiter");
         attachButton(t3, query3, "job");
@@ -55,20 +57,24 @@ public class DeleteFromTables extends JPanel {
         attachButton(t7, query7, "interview");
     }
 
-    // thankfully this can be generalised pretty easily because we named all our primary keys really easy names
-    // ...except for job applicant id mfw
+    // thankfully the process for deletion based on primary key be generalised pretty easily because we named all our primary keys really easy names
+    // ...except for job applicant and application, which we made exceptions for in the code below
     public void attachButton(JButton button, String query, String tableName) {
         button.addActionListener(e -> {
             try {
-                String idColumn = tableName.equals("jobapplicant") ? "applicantID" : tableName + "ID";
-                idColumn = tableName.equals("jobapplication") ? "jobAppID" : idColumn;
+                String idColumn = tableName.equals("jobapplicant") ? "applicantID" : tableName + "ID"; // if jobapplicant, use applicantID instead
+                idColumn = tableName.equals("jobapplication") ? "jobAppID" : idColumn; // if jobapplication, use jobAppID instead
+                
+                // then literally just ask for the primary key value to delete
+                // since the rest of our tables are literally just named tableName+"ID", this works for all other tables
                 String idValue = JOptionPane.showInputDialog("Enter " + idColumn + " of the row to delete from " + tableName + ":");
                 if (idValue != null && !idValue.trim().isEmpty()) {
+                    // prepare a statement
                     String deleteSQL = "DELETE FROM " + tableName + " WHERE " + idColumn + " = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(deleteSQL);
-                    pstmt.setInt(1, Integer.parseInt(idValue));
-                    int rowsAffected = pstmt.executeUpdate();
-                    if (rowsAffected > 0) {
+                    pstmt.setInt(1, Integer.parseInt(idValue)); // set the primary key value
+                    int rowsAffected = pstmt.executeUpdate(); // execute
+                    if (rowsAffected > 0) { // if something was deleted
                         JOptionPane.showMessageDialog(null, "Record deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                         // show the updated table
@@ -76,13 +82,16 @@ public class DeleteFromTables extends JPanel {
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
-                    } else {
+                    } else { // else something went wrong
                         JOptionPane.showMessageDialog(null, "No record found with the given ID.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-            } catch (SQLException ex) {
+            } catch (SQLException ex) { // catch any SQL errors
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error deleting record: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) { // catch any other errors
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error processing query:\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }

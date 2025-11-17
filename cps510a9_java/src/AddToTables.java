@@ -10,6 +10,8 @@ public class AddToTables extends JPanel {
     private final DBConnection dbConnection;
 
     public AddToTables(DB_GUI gui, String username, String password) throws SQLException {
+
+        // setting up the GUI
         this.dbConnection = DBConnection.getInstance(username, password);
 
         setLayout(new BorderLayout());
@@ -49,6 +51,7 @@ public class AddToTables extends JPanel {
         String query6 = "SELECT * FROM Resume";
         String query7 = "SELECT * FROM Interview";
 
+        // attach the buttons to their functions, pass in the select * query to show updated table after insertion
         attachCompanyButton(t1, query1);
         attachRecruiterButton(t2, query2);
         attachJobButton(t3, query3);
@@ -58,14 +61,14 @@ public class AddToTables extends JPanel {
         attachInterviewButton(t7, query7);
     }
 
-    // these ones mostly follow the same format, just different fields
-    // how i wish i had enough time to find out some way to generalise this process 
-    // but unfortunately copypasting every value and then copilot autofilling the rest is all i have brainpower for
-    // (i have spent this entire week working on assignments)
+    // function that provides specific functionality for the Company button
+    // these ones mostly follow the same format, just different fields - i'll just comment this one in detail
+    // again, the other ones basically do the exact same thing as this one, but customised for their respective tables with variable names, strings, etc.
     private void attachCompanyButton(JButton button, String query) {
-        button.addActionListener(e -> {
+        button.addActionListener(e -> { // attach this functionality to the button
             try {
 
+                // create text fields for each attribute in the table
                 JTextField companyID = new JTextField();
                 JTextField name = new JTextField();
                 JTextField industry = new JTextField();
@@ -73,6 +76,7 @@ public class AddToTables extends JPanel {
                 JTextField email = new JTextField();
                 JTextField phone = new JTextField();
 
+                // pass it into a dialog/input box
                 Object[] queryValues = {
                     "Company ID (mandatory int, unique):", companyID,
                     "Name (mandatory, unique):", name,
@@ -84,10 +88,15 @@ public class AddToTables extends JPanel {
 
                 int option = JOptionPane.showConfirmDialog(null, queryValues, "Insert New Company", JOptionPane.OK_CANCEL_OPTION);
 
+                // when the dialogue is confirmed - assuming there are values in the input fields
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "INSERT INTO Company (companyID, name, industry, location, email, phone) VALUES (?, ?, ?, ?, ?, ?)";
-                    PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
-                    // the following here go into the question marks of the prepared statem in order, basically
+
+                    //prepare an sql statement
+                    String insertSQL = "INSERT INTO Company (companyID, name, industry, location, email, phone) VALUES (?, ?, ?, ?, ?, ?)"; 
+                    PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL); // 
+
+                    // the following here go into the question marks of the prepared statement in order, basically
+                    // 1 for the first question mark, 2 for the 2nd, etc.
                     pstmt.setInt(1, Integer.parseInt(companyID.getText()));
                     pstmt.setString(2, name.getText());
                     pstmt.setString(3, industry.getText());
@@ -95,8 +104,8 @@ public class AddToTables extends JPanel {
                     pstmt.setString(5, email.getText());
                     pstmt.setString(6, phone.getText());
 
-                    int rowsAffected = pstmt.executeUpdate();
-                    if (rowsAffected > 0) {
+                    int rowsAffected = pstmt.executeUpdate(); // how many rows were affected?
+                    if (rowsAffected > 0) { // if more than 0, you did it
                         JOptionPane.showMessageDialog(null, "New company added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                         // show the updated table
@@ -104,14 +113,14 @@ public class AddToTables extends JPanel {
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
-                    } else {
+                    } else { // else something went wrong
                         JOptionPane.showMessageDialog(null, "Failed to add new company.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
-            } catch (SQLException ex) {
+            } catch (SQLException ex) { // catch any sql errors - database end
                 JOptionPane.showMessageDialog(null, "Error executing query:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception ex) {
+            } catch (Exception ex) { // catch any other errors - java end (usually careless input)
                 JOptionPane.showMessageDialog(null, "Error processing query:\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -142,7 +151,6 @@ public class AddToTables extends JPanel {
                 if (option == JOptionPane.OK_OPTION) {
                     String insertSQL = "INSERT INTO Recruiter (recruiterID, companyID, first_name, last_name, email, phone) VALUES (?, ?, ?, ?, ?, ?)";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
-                    // the following here go into the question marks of the prepared statem in order, basically
                     pstmt.setInt(1, Integer.parseInt(recruiterID.getText()));
                     pstmt.setInt(2, Integer.parseInt(companyID.getText()));
                     pstmt.setString(3, first_name.getText());
@@ -154,7 +162,6 @@ public class AddToTables extends JPanel {
                     if (rowsAffected > 0) {
                         JOptionPane.showMessageDialog(null, "New recruiter added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                        // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
@@ -203,7 +210,6 @@ public class AddToTables extends JPanel {
                 if (option == JOptionPane.OK_OPTION) {
                     String insertSQL = "INSERT INTO Job (jobID, companyID, recruiterID, salary, workingHours, datePosted, location, title, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
-                    // the following here go into the question marks of the prepared statem in order, basically
                     pstmt.setInt(1, Integer.parseInt(jobID.getText()));
                     pstmt.setInt(2, Integer.parseInt(companyID.getText()));
                     pstmt.setInt(3, Integer.parseInt(recruiterID.getText()));
@@ -262,7 +268,6 @@ public class AddToTables extends JPanel {
                 if (option == JOptionPane.OK_OPTION) {
                     String insertSQL = "INSERT INTO JobApplicant (applicantID, first_name, last_name, industry, birthDate, address, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
-                    // the following here go into the question marks of the prepared statem in order, basically
                     pstmt.setInt(1, Integer.parseInt(applicantID.getText()));
                     pstmt.setString(2, first_name.getText());
                     pstmt.setString(3, last_name.getText());
@@ -275,7 +280,6 @@ public class AddToTables extends JPanel {
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
                         JOptionPane.showMessageDialog(null, "New job applicant added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
@@ -316,7 +320,6 @@ public class AddToTables extends JPanel {
                 if (option == JOptionPane.OK_OPTION) {
                     String insertSQL = "INSERT INTO JobApplication (jobAppID, jobID, applicantID, dateTime, status) VALUES (?, ?, ?, ?, ?)";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
-                    // the following here go into the question marks of the prepared statem in order, basically
                     pstmt.setInt(1, Integer.parseInt(jobAppID.getText()));
                     pstmt.setInt(2, Integer.parseInt(jobID.getText()));
                     pstmt.setInt(3, Integer.parseInt(applicantID.getText()));
@@ -326,7 +329,6 @@ public class AddToTables extends JPanel {
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
                         JOptionPane.showMessageDialog(null, "New job application added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
@@ -344,15 +346,19 @@ public class AddToTables extends JPanel {
         });
     }
 
+     // this one is slightly different because of the blob file upload
     private void attachResumeButton(JButton button, String query) {
         button.addActionListener(e -> {
             try {
 
                 JTextField resumeID = new JTextField();
                 JTextField applicantID = new JTextField();
-                JButton pickFileButton = new JButton("Pick a file");
+                JButton pickFileButton = new JButton("Pick a file"); // this has changed to a button that when clicked, opens a file picker
                 JTextField uploadDate = new JTextField();
 
+                // here's that button's functionality, and the filepicker associated with it
+                // variable scope prevents us from accessing the file picked from inside of here
+                // so we access the file name through the button text later on
                 pickFileButton.addActionListener (event -> {
                     JFileChooser fileChooser = new JFileChooser();
                     int returnValue = fileChooser.showOpenDialog(null);
@@ -363,6 +369,7 @@ public class AddToTables extends JPanel {
                     }
                 });
 
+                // same as before, input dialog with the fields
                 Object[] queryValues = {
                     "ResumeID (mandatory int, unique):", resumeID,
                     "ApplicantID (mandatory, reference to JobApplicant table):", applicantID,
@@ -378,7 +385,7 @@ public class AddToTables extends JPanel {
                     // the following here go into the question marks of the prepared statem in order, basically
                     pstmt.setInt(1, Integer.parseInt(resumeID.getText()));
                     pstmt.setInt(2, Integer.parseInt(applicantID.getText()));
-                    pstmt.setBlob(3, convertFileToInputStream(pickFileButton.getText().equals("Pick a file") ? null : pickFileButton.getText()));
+                    pstmt.setBlob(3, convertFileToInputStream(pickFileButton.getText().equals("Pick a file") ? null : pickFileButton.getText())); // this part - use a helper function to convert the fileName from the text button to an input stream
                     pstmt.setDate(4, Date.valueOf(uploadDate.getText()));
 
                     int rowsAffected = pstmt.executeUpdate();
@@ -402,6 +409,7 @@ public class AddToTables extends JPanel {
         });
     }
 
+    // the helper function in question - converts a filepath/filename into a FileInputStream for the blob insertion
     private FileInputStream convertFileToInputStream(String fileName)  {
         File file = new File(fileName);
         try {
@@ -434,7 +442,6 @@ public class AddToTables extends JPanel {
                 if (option == JOptionPane.OK_OPTION) {
                     String insertSQL = "INSERT INTO Interview (interviewID, jobAppID, dateTime, location) VALUES (?, ?, ?, ?)";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
-                    // the following here go into the question marks of the prepared statem in order, basically
                     pstmt.setInt(1, Integer.parseInt(interviewID.getText()));
                     pstmt.setInt(2, Integer.parseInt(jobAppID.getText()));
                     pstmt.setDate(3, Date.valueOf(dateTime.getText()));
