@@ -48,9 +48,10 @@ public class DB_GUI extends JFrame {
         JButton updateButton = new JButton("Update Tables");
         JButton addButton = new JButton("Add to Tables");
         JButton deleteButton = new JButton("Delete from Tables");
+        JButton lookButton = new JButton("Look at Tables");
         JButton exitButton = new JButton("Exit");
 
-        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, updateButton, addButton, deleteButton, exitButton};
+        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, updateButton, addButton, deleteButton, lookButton, exitButton};
 
         for (JButton button : buttons) {
             button.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -67,6 +68,7 @@ public class DB_GUI extends JFrame {
         updateButton.addActionListener(e -> showUpdateTables());
         addButton.addActionListener(e -> showAddToTables());
         deleteButton.addActionListener(e -> showDeleteFromTables());
+        lookButton.addActionListener(e -> showLookTables());
         exitButton.addActionListener(e -> System.exit(0));
 
         menuPanel.add(buttonPanel, BorderLayout.CENTER);
@@ -214,6 +216,20 @@ public class DB_GUI extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public void showLookTables() {
+        try {
+            LookTables lookTablesPanel = new LookTables(this, username, password);
+            mainPanel.add(lookTablesPanel, "ViewTables");
+            cardLayout.show(mainPanel, "ViewTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading ViewTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
     public void setCredentials(String username, String password) {
         this.username = username;
