@@ -22,8 +22,13 @@ public class QueryTables extends JPanel {
         JButton q3 = new JButton("Recruiters & Applicants Connected to Apple Canada");
         JButton q4 = new JButton("Companies with Applications Under Review");
         JButton q5 = new JButton("Applicants Who Have Never Been Interviewed");
+        JButton q6 = new JButton("Job Applicants who Applied to either Apple Canada or AMD");
+        JButton q7 = new JButton("Total Job Applications per Company and Show Only Those Above Average");
+        JButton q8 = new JButton("Companies that Have at Least One Job Posting Where at Least One Applicant has Applied");
+        JButton q9 = new JButton("Job Applicants that Have Applied for at Least One Job, but Have Never Been Interviewed");
+        JButton q10 = new JButton("Average Salary of All Jobs Posted, Including the Minimum and Maximum Salaries of the Jobs Posted by the Company");
 
-        JButton[] buttons = {q1, q2, q3, q4, q5};
+        JButton[] buttons = {q1, q2, q3, q4, q5, q6, q7, q8, q9, q10};
         for (JButton b : buttons) {
             b.setFont(new Font("Times New Roman", Font.BOLD, 18));
             buttonPanel.add(b);
@@ -74,12 +79,80 @@ public class QueryTables extends JPanel {
                 "WHERE NOT EXISTS ( " +
                 "    SELECT * FROM JobApplication japp, Interview i " +
                 "    WHERE japp.applicantID = ja.applicantID AND i.jobAppID = japp.jobAppID)";
+        
+        String query6 = 
+                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name" + 
+                "FROM JobApplicant a" +
+                "JOIN JobApplication ja ON a.applicantID = ja.applicantID" + 
+                    "JOIN Job j ON ja.jobID = j.jobID" +
+                    "JOIN Company c ON j.companyID = c.companyID" +
+                "WHERE c.name = 'Apple Canada'" +
+                "UNION" +
+                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name" +
+                "FROM JobApplicant a" +
+                "JOIN JobApplication ja ON a.applicantID = ja.applicantID" +
+                    "JOIN Job j ON ja.jobID = j.jobID" +
+                    "JOIN Company c ON j.companyID = c.companyID" +
+                "WHERE c.name = 'AMD'";
+        
+        String query7 =
+                "SELECT c.name AS CompanyName, COUNT(ja.jobAppID) AS TotalJobApplications" +
+                "FROM Company c " +
+                "JOIN Job j ON c.companyID = j.companyID " +
+                "JOIN JobApplication ja ON j.jobID = ja.jobID " +
+                "GROUP BY c.name " +
+                "HAVING COUNT(ja.jobAppID) > ( " +
+                "    SELECT AVG(job_app_count) " +
+                "    FROM ( " +
+                "        SELECT COUNT(ja2.jobAppID) AS job_app_count " +
+                "        From JobApplication ja2 " +
+                "        JOIN Job j2 ON ja2.jobID = j2.jobID " +
+                "        GROUP BY j2.companyID " +
+                "    ) " +
+                ")" + 
+                "ORDER BY TotalJobApplications DESC;";
+        
+        String query8 =
+                "SELECT DISTINCT c.name AS CompanyName" + 
+                "FROM Company c " +
+                "WHERE EXISTS ( " +
+                "    SELECT 1 " +
+                "    FROM Job j " +
+                "    JOIN JobApplication ja ON j.jobID = ja.jobID " +
+                "    WHERE j.companyID = c.companyID " +
+                ")";
+        
+        String query9 =
+                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name" + 
+                "FROM JobApplicant a" + 
+                "JOIN JobApplication ja ON a.applicantID = ja.applicantID" +
+                "MINUS" + 
+                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name" + 
+                "FROM JobApplicant a" + 
+                "JOIN JobApplication ja ON a.applicantID = ja.applicantID" +
+                "JOIN Interview i ON ja.jobAppID = i.jobAppID;";
 
+        String query10 =
+                "SELECT " + 
+                "   c.name AS CompanyName, " +
+                "   AVG(j.salary) AS AverageSalary, " +
+                "   MIN(j.salary) AS MinimumSalary, " +
+                "   MAX(j.salary) AS MaximumSalary " +
+                "FROM Company c " +
+                "JOIN Job j ON c.companyID = j.companyID " +
+                "GROUP BY c.name;" +
+                "ORDER BY AvgSalary DESC;";
+                
         attachQueryButton(q1, query1);
         attachQueryButton(q2, query2);
         attachQueryButton(q3, query3);
         attachQueryButton(q4, query4);
         attachQueryButton(q5, query5);
+        attachQueryButton(q6, query6);
+        attachQueryButton(q7, query7);
+        attachQueryButton(q8, query8);
+        attachQueryButton(q9, query9);
+        attachQueryButton(q10, query10);
     }
 
     private void attachQueryButton(JButton button, String query) {

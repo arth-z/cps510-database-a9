@@ -55,11 +55,10 @@ public class DB_GUI extends JFrame {
             buttonPanel.add(button);
         }
 
-        // Add action listeners for navigation
+        /* Add action listeners for navigation */
         createButton.addActionListener(e -> showCreateTables());
         dropButton.addActionListener(e -> showDropTables());
-        populateButton.addActionListener(e -> showPopulateTables());
-        // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
+        populateButton.addActionListener(e -> showPopulateTables()); 
         queryButton.addActionListener(e -> showQueryTables());
         viewButton.addActionListener(e -> showViewTables());
         exitButton.addActionListener(e -> System.exit(0));
