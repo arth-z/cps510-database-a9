@@ -111,6 +111,8 @@ public class AddToTables extends JPanel {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "Error executing query:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error processing query:\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -164,6 +166,8 @@ public class AddToTables extends JPanel {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "Error executing query:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error processing query:\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -280,6 +284,8 @@ public class AddToTables extends JPanel {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "Error executing query:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error processing query:\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -329,6 +335,8 @@ public class AddToTables extends JPanel {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "Error executing query:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error processing query:\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -385,6 +393,8 @@ public class AddToTables extends JPanel {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "Error executing query:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error processing query:\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -442,6 +452,8 @@ public class AddToTables extends JPanel {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "Error executing query:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error processing query:\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
