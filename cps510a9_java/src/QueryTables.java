@@ -110,7 +110,7 @@ public class QueryTables extends JPanel {
                 "        GROUP BY j2.companyID " +
                 "    ) " +
                 ") " + 
-                "ORDER BY TotalJobApplications DESC;";
+                "ORDER BY TotalJobApplications DESC";
         
         String query8 =
                 "SELECT DISTINCT c.name AS CompanyName " + 
