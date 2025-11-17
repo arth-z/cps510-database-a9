@@ -17,16 +17,16 @@ public class QueryTables extends JPanel {
 
         JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 10, 10));
 
-        JButton q1 = new JButton("Companies with Posted Jobs but No Interviews");
-        JButton q2 = new JButton("Companies Above Average Working Hours");
-        JButton q3 = new JButton("Recruiters & Applicants Connected to Apple Canada");
-        JButton q4 = new JButton("Companies with Applications Under Review");
-        JButton q5 = new JButton("Applicants Who Have Never Been Interviewed");
-        JButton q6 = new JButton("Job Applicants who Applied to either Apple Canada or AMD");
-        JButton q7 = new JButton("Total Job Applications per Company and Show Only Those Above Average");
-        JButton q8 = new JButton("Companies that Have at Least One Job Posting Where at Least One Applicant has Applied");
-        JButton q9 = new JButton("Job Applicants that Have Applied for at Least One Job, but Have Never Been Interviewed");
-        JButton q10 = new JButton("Average Salary of All Jobs Posted, Including the Minimum and Maximum Salaries of the Jobs Posted by the Company");
+        JButton q1 = new JButton("Companies with posted jobs but no interviews");
+        JButton q2 = new JButton("Companies above average Working hours");
+        JButton q3 = new JButton("Recruiters and applicants connected to Apple Canada");
+        JButton q4 = new JButton("Companies with applications under review");
+        JButton q5 = new JButton("Applicants who have never Been interviewed");
+        JButton q6 = new JButton("Job applicants who applied to either Apple Canada or AMD");
+        JButton q7 = new JButton("Total job applications per company and show only those above average");
+        JButton q8 = new JButton("Companies that have at least one job posting where at least one applicant has applied");
+        JButton q9 = new JButton("Job applicants that have applied for at least one job, but have never been interviewed");
+        JButton q10 = new JButton("Average salary of all jobs posted, including the minimum and maximum salaries of the jobs posted by the company");
 
         JButton[] buttons = {q1, q2, q3, q4, q5, q6, q7, q8, q9, q10};
         for (JButton b : buttons) {
