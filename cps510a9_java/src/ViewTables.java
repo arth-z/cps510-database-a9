@@ -7,8 +7,9 @@ public class ViewTables extends JPanel {
     private final DBConnection dbConnection;
 
     public ViewTables(DB_GUI gui, String username, String password) throws SQLException {
-        this.dbConnection = DBConnection.getInstance(username, password);
+        this.dbConnection = DBConnection.getInstance(username, password); // connect
 
+        // set up the GUI
         setLayout(new BorderLayout());
 
         JLabel title = new JLabel("View Tables", SwingConstants.CENTER);
@@ -40,6 +41,7 @@ public class ViewTables extends JPanel {
         backButton.addActionListener(e -> gui.showMainMenu());
         add(backButton, BorderLayout.SOUTH);
 
+        // define the view creation queries
         String view1 =
             "CREATE or REPLACE VIEW ApplicantJobInfo AS " +
                 "SELECT " +
@@ -134,6 +136,7 @@ public class ViewTables extends JPanel {
                 "FROM Recruiter, Company, Interview, JobApplication, Job " +
                 "WHERE Recruiter.companyID = Company.companyID AND Job.recruiterID = Recruiter.recruiterID AND Job.jobID = JobApplication.jobID AND JobApplication.jobAppID = Interview.jobAppID";
 
+        // attach a query functionality to each button, as well as specify a query to show the created view
         attachViewToButton(q1, view1, "SELECT * FROM ApplicantJobInfo");
         attachViewToButton(q2, view2, "SELECT * FROM InterviewSchedules");
         attachViewToButton(q3, view3, "SELECT * FROM CompanyJobSummary");
@@ -145,22 +148,24 @@ public class ViewTables extends JPanel {
         attachViewToButton(q9, view9, "SELECT * FROM RecruiterInterview");
     }
 
+    // attach functionality to a button
+    // essentially - execute the view queries, then show the view results in a table (using the showViewQuery parameter)
     private void attachViewToButton(JButton button, String viewQuery, String showViewQuery) {
         button.addActionListener(e -> {
             try {
-                dbConnection.executeUpdate(viewQuery);
-                JOptionPane.showMessageDialog(null, "View created successfully! Now showing view...", "Success", JOptionPane.INFORMATION_MESSAGE);
+                dbConnection.executeUpdate(viewQuery); // execute the view query
+                JOptionPane.showMessageDialog(null, "View created successfully! Now showing view...", "Success", JOptionPane.INFORMATION_MESSAGE); // create the view
 
                 try {
-                    ResultSet rs = dbConnection.executeQuery(showViewQuery);
+                    ResultSet rs = dbConnection.executeQuery(showViewQuery); // now connect again and try and execute the show view query
                     JTable table = new JTable(DB_GUI.buildTableModel(rs));
                     JOptionPane.showMessageDialog(null, new JScrollPane(table), "Query Results", JOptionPane.INFORMATION_MESSAGE);
                     JOptionPane.showMessageDialog(null, "View displayed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                } catch (SQLException ex) {
+                } catch (SQLException ex) { // catch any SQL errors (something going wrong showing the view)
                     JOptionPane.showMessageDialog(null, "Error showing view:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
-            } catch (SQLException ex) {
+            } catch (SQLException ex) { // catch any SQL errors (something going wrong creating the view)
                 JOptionPane.showMessageDialog(null, "Error creating view:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
