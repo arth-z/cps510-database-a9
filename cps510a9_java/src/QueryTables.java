@@ -11,12 +11,15 @@ public class QueryTables extends JPanel {
 
         setLayout(new BorderLayout());
 
+//Label for the title 
         JLabel title = new JLabel("Query Tables", SwingConstants.CENTER);
         title.setFont(new Font("Times New Roman", Font.BOLD, 28));
         add(title, BorderLayout.NORTH);
 
+//Create the grid like panel for the query menu
         JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 10, 10));
 
+//Create the buttons for each query
         JButton q1 = new JButton("Companies with posted jobs but no interviews");
         JButton q2 = new JButton("Companies above average Working hours");
         JButton q3 = new JButton("Recruiters and applicants connected to Apple Canada");
@@ -28,6 +31,7 @@ public class QueryTables extends JPanel {
         JButton q9 = new JButton("Job applicants that have applied for at least one job, but have never been interviewed");
         JButton q10 = new JButton("Average salary of all jobs posted, including the minimum and maximum salaries of the jobs posted by the company");
 
+        //Add the buttons to the panel and style the font
         JButton[] buttons = {q1, q2, q3, q4, q5, q6, q7, q8, q9, q10};
         for (JButton b : buttons) {
             b.setFont(new Font("Times New Roman", Font.BOLD, 18));
@@ -36,6 +40,7 @@ public class QueryTables extends JPanel {
 
         add(buttonPanel, BorderLayout.CENTER);
 
+        //Implement the back button to go to the main menu
         JButton backButton = new JButton("Back");
         backButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
         backButton.addActionListener(e -> gui.showMainMenu());
@@ -143,6 +148,7 @@ public class QueryTables extends JPanel {
                 "GROUP BY c.name " +
                 "ORDER BY AverageSalary DESC";
                 
+        //Attaching buttons to the queries
         attachQueryButton(q1, query1);
         attachQueryButton(q2, query2);
         attachQueryButton(q3, query3);
@@ -155,6 +161,8 @@ public class QueryTables extends JPanel {
         attachQueryButton(q10, query10);
     }
 
+//Function that lets the buttons be clickable and converts the query results to a table in a popup message and shows a success message if it executes without errors
+//and error messages if there are errors
     private void attachQueryButton(JButton button, String query) {
         button.addActionListener(e -> {
             try {

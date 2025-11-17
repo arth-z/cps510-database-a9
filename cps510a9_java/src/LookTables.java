@@ -108,6 +108,7 @@ public class LookTables extends JPanel {
         return new DefaultTableModel(data, columnNames);
     }
 
+    /* Helper to append text to output area */
     private void log(String message) {
         outputArea.append(message + "\n");
     }
