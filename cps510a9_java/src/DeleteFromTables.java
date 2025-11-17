@@ -56,10 +56,12 @@ public class DeleteFromTables extends JPanel {
     }
 
     // thankfully this can be generalised pretty easily because we named all our primary keys really easy names
+    // ...except for job applicant id mfw
     public void attachButton(JButton button, String query, String tableName) {
         button.addActionListener(e -> {
             try {
-                String idColumn = tableName + "ID"; 
+                String idColumn = tableName.equals("jobapplicant") ? "applicantID" : tableName + "ID";
+                idColumn = tableName.equals("jobapplication") ? "jobAppID" : idColumn;
                 String idValue = JOptionPane.showInputDialog("Enter " + idColumn + " of the row to delete from " + tableName + ":");
                 if (idValue != null && !idValue.trim().isEmpty()) {
                     String deleteSQL = "DELETE FROM " + tableName + " WHERE " + idColumn + " = ?";
