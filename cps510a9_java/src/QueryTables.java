@@ -81,22 +81,22 @@ public class QueryTables extends JPanel {
                 "    WHERE japp.applicantID = ja.applicantID AND i.jobAppID = japp.jobAppID)";
         
         String query6 = 
-                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name" + 
-                "FROM JobApplicant a" +
-                "JOIN JobApplication ja ON a.applicantID = ja.applicantID" + 
-                    "JOIN Job j ON ja.jobID = j.jobID" +
-                    "JOIN Company c ON j.companyID = c.companyID" +
-                "WHERE c.name = 'Apple Canada'" +
-                "UNION" +
-                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name" +
-                "FROM JobApplicant a" +
-                "JOIN JobApplication ja ON a.applicantID = ja.applicantID" +
-                    "JOIN Job j ON ja.jobID = j.jobID" +
-                    "JOIN Company c ON j.companyID = c.companyID" +
-                "WHERE c.name = 'AMD'";
+                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name " + 
+                "FROM JobApplicant a " +
+                "JOIN JobApplication ja ON a.applicantID = ja.applicantID " + 
+                    "JOIN Job j ON ja.jobID = j.jobID " +
+                    "JOIN Company c ON j.companyID = c.companyID " +
+                "WHERE c.name = 'Apple Canada' " +
+                "UNION " +
+                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name " +
+                "FROM JobApplicant a " +
+                "JOIN JobApplication ja ON a.applicantID = ja.applicantID " +
+                    "JOIN Job j ON ja.jobID = j.jobID " +
+                    "JOIN Company c ON j.companyID = c.companyID " +
+                "WHERE c.name = 'AMD' ";
         
         String query7 =
-                "SELECT c.name AS CompanyName, COUNT(ja.jobAppID) AS TotalJobApplications" +
+                "SELECT c.name AS CompanyName, COUNT(ja.jobAppID) AS TotalJobApplications " +
                 "FROM Company c " +
                 "JOIN Job j ON c.companyID = j.companyID " +
                 "JOIN JobApplication ja ON j.jobID = ja.jobID " +
@@ -109,11 +109,11 @@ public class QueryTables extends JPanel {
                 "        JOIN Job j2 ON ja2.jobID = j2.jobID " +
                 "        GROUP BY j2.companyID " +
                 "    ) " +
-                ")" + 
+                ") " + 
                 "ORDER BY TotalJobApplications DESC;";
         
         String query8 =
-                "SELECT DISTINCT c.name AS CompanyName" + 
+                "SELECT DISTINCT c.name AS CompanyName " + 
                 "FROM Company c " +
                 "WHERE EXISTS ( " +
                 "    SELECT 1 " +
@@ -123,14 +123,14 @@ public class QueryTables extends JPanel {
                 ")";
         
         String query9 =
-                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name" + 
-                "FROM JobApplicant a" + 
-                "JOIN JobApplication ja ON a.applicantID = ja.applicantID" +
-                "MINUS" + 
-                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name" + 
-                "FROM JobApplicant a" + 
-                "JOIN JobApplication ja ON a.applicantID = ja.applicantID" +
-                "JOIN Interview i ON ja.jobAppID = i.jobAppID;";
+                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name " + 
+                "FROM JobApplicant a " + 
+                "JOIN JobApplication ja ON a.applicantID = ja.applicantID " +
+                "MINUS " + 
+                "SELECT DISTINCT a.applicantID, a.first_name, a.last_name " + 
+                "FROM JobApplicant a " + 
+                "JOIN JobApplication ja ON a.applicantID = ja.applicantID " +
+                "JOIN Interview i ON ja.jobAppID = i.jobAppID";
 
         String query10 =
                 "SELECT " + 
@@ -140,8 +140,8 @@ public class QueryTables extends JPanel {
                 "   MAX(j.salary) AS MaximumSalary " +
                 "FROM Company c " +
                 "JOIN Job j ON c.companyID = j.companyID " +
-                "GROUP BY c.name;" +
-                "ORDER BY AvgSalary DESC;";
+                "GROUP BY c.name " +
+                "ORDER BY AverageSalary DESC";
                 
         attachQueryButton(q1, query1);
         attachQueryButton(q2, query2);
