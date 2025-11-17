@@ -6,12 +6,14 @@ import java.awt.event.*;
 import java.sql.*;
 import java.util.*;  
 
+/* This class represents the main GUI for the application */
 public class DB_GUI extends JFrame {
-    private CardLayout cardLayout;
-    private JPanel mainPanel;
-    private String username;
-    private String password;
+    private CardLayout cardLayout;   /* Manages switching between different panels */
+    private JPanel mainPanel;        /* Container for all screens (login, main menu, etc.) */
+    private String username;         /* Stores Oracle username for database access */
+    private String password;         /* Stores Oracle password for database access */
 
+    /* Sets up the frame, layout, and adds the login and main menu panels */
     public DB_GUI() {
         setTitle("Online Job Bank System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -21,16 +23,20 @@ public class DB_GUI extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
+        /* Add the Login screen as the first panel */
         mainPanel.add(new Login(this), "login");
 
+        /* Add the Main Menu screen */
         JPanel mainMenu = createMainMenu();
         mainPanel.add(mainMenu, "mainmenu");
         mainPanel.setBackground(Color.BLUE);
-            
+        
+        /* Add the main panel to the frame and show login screen first */
         add(mainPanel); 
         cardLayout.show(mainPanel, "login");
     }
 
+    /* Creates the main menu panel. Each button navigates to a different feature of the system */
     private JPanel createMainMenu() {
         JPanel menuPanel = new JPanel(new BorderLayout());
         JLabel titleLabel = new JLabel("ONLINE JOB BANK SYSTEM", SwingConstants.CENTER);
@@ -40,6 +46,7 @@ public class DB_GUI extends JFrame {
         JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         Color LightBlue = new Color(173, 216, 230);
 
+        /* Define main menu buttons for all database operations */
         JButton createButton = new JButton("Create Tables");
         JButton dropButton = new JButton("Drop Tables");
         JButton populateButton = new JButton("Populate Tables");
@@ -51,15 +58,17 @@ public class DB_GUI extends JFrame {
         JButton lookButton = new JButton("Look at Tables");
         JButton exitButton = new JButton("Exit");
 
+        /* Group buttons into an array for consistent styling and layout */
         JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, updateButton, addButton, deleteButton, lookButton, exitButton};
 
+        /* Style all buttons */
         for (JButton button : buttons) {
             button.setFont(new Font("Times New Roman", Font.BOLD, 20));
             button.setBackground(LightBlue);
             buttonPanel.add(button);
         }
 
-        /* Add action listeners for navigation */
+        /* Add action listeners for navigation to other panels */
         createButton.addActionListener(e -> showCreateTables());
         dropButton.addActionListener(e -> showDropTables());
         populateButton.addActionListener(e -> showPopulateTables()); 
@@ -76,6 +85,7 @@ public class DB_GUI extends JFrame {
 
     }
 
+    /* Utility method to attach a query button to an SQL statement. Executes a query when the button is clicked and displays the result in a JTable. */
     public static void executeButtonActionEvent(JButton tableButton, DBConnection databaseConnection, String query) {
         tableButton.addActionListener(actionEvent -> {
             try {
@@ -89,17 +99,19 @@ public class DB_GUI extends JFrame {
         });
     }
 
+    /* Converts a ResultSet (from a SQL query) into a DefaultTableModel. This allows the data to be displayed inside a JTable. */
     public static DefaultTableModel buildTableModel(ResultSet queryResult) throws SQLException {
-
         ResultSetMetaData queryMetaData = queryResult.getMetaData();
         int columnCount = queryMetaData.getColumnCount();
         Vector<String> columnNames = new Vector<>();
         Vector<Vector<Object>> queryDataVector = new Vector<>();
 
+        /* Extract column names */
         for (int columnNumber = 1; columnNumber <= columnCount; columnNumber++) {
             columnNames.add(queryMetaData.getColumnName(columnNumber));
         }
 
+        /* Extract each row of data */
         while (queryResult.next()) {
             Vector<Object> tempDataVector = new Vector<>();
             for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
@@ -107,12 +119,16 @@ public class DB_GUI extends JFrame {
             }
             queryDataVector.add(tempDataVector);
         }
+        /* Return a model suitable for JTable display */
         return new DefaultTableModel(queryDataVector, columnNames);
     }
 
+    /* Displays the main menu screen */
     public void showMainMenu() {
         cardLayout.show(mainPanel, "mainmenu");
     }
+
+     /* Navigation methods: each loads the respective panel dynamically */
     public void showCreateTables() {
         try {
             CreateTables createTablesPanel = new CreateTables(this, username, password);
@@ -230,12 +246,13 @@ public class DB_GUI extends JFrame {
         }
     }
 
-
+    /* Stores the Oracle login credentials (used for all DB operations) */
     public void setCredentials(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
+    /* Adds a new panel to display output (e.g., logs or SQL results) with a back button */
     public void addOutputPanel(String name, JTextArea outputArea) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JScrollPane(outputArea), BorderLayout.CENTER);
@@ -249,6 +266,7 @@ public class DB_GUI extends JFrame {
         cardLayout.show(mainPanel, name);
     }
 
+    /* Main method to launch the GUI application */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             DB_GUI gui = new DB_GUI();

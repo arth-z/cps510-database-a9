@@ -4,18 +4,23 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
+/* This class is responsible for populating the database tables of the application */
 public class PopulateTables extends JPanel {
-    private final DBConnection dbConnection;
-    private final JTextArea outputArea = new JTextArea();
+    private final DBConnection dbConnection;  /* Handles connection to Oracle database */
+    private final JTextArea outputArea = new JTextArea(); /* Displays SQL output and logs */
 
+    /* Sets up the title, layout, and three main buttons: Populate, View Output, and Back */
     public PopulateTables(DB_GUI gui, String username, String password) throws SQLException {
+        /* Get database connection instance using user credentials */
         this.dbConnection = DBConnection.getInstance(username, password);
         setLayout(new BorderLayout());
 
+         /* Title label displayed at the top */
         JLabel title = new JLabel("Populate Tables", SwingConstants.CENTER);
         title.setFont(new Font("Times New Roman", Font.BOLD, 24));
         add(title, BorderLayout.NORTH);
 
+         /* Configure SQL output area for displaying execution results */
         outputArea.setEditable(false);
         outputArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         outputArea.setBorder(BorderFactory.createTitledBorder("SQL Output"));
@@ -23,26 +28,34 @@ public class PopulateTables extends JPanel {
         scrollPane.setPreferredSize(new Dimension(600, 300));
         add(scrollPane, BorderLayout.CENTER);
 
+        /* Create a panel for buttons at the bottom */
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
+        /* Button to execute the SQL population process */
         JButton executeButton = new JButton("Populate Tables");
         executeButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
         executeButton.addActionListener(e -> populateTables());
 
+        /* Button to open the output log in a new window */
         JButton viewOutputButton = new JButton("View Output");
         viewOutputButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
         viewOutputButton.addActionListener(e -> gui.addOutputPanel("PopulateTablesOutput", outputArea));
 
+         /* Button to navigate back to the main menu */
         JButton backButton = new JButton("Back");
         backButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
         backButton.addActionListener(e -> gui.showMainMenu());
 
+        /* Add buttons to the button panel */
         buttonPanel.add(executeButton);
         buttonPanel.add(viewOutputButton);
         buttonPanel.add(backButton);
+
+        /* Add button panel to the main panel */
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /* Main method to populate the database tables with sample data. Includes detailed transaction management and logs for all SQL statements */
     private void populateTables() {
         outputArea.setText("");
         log("Starting table population process...\n");
@@ -113,21 +126,25 @@ public class PopulateTables extends JPanel {
                     executeAndLog("UPDATE Resume SET uploadDate = TO_DATE('2025-09-27', 'YYYY-MM-DD') WHERE resumeID = 1", "1 row updated.");
                     executeAndLog("UPDATE Resume SET uploadFile = UTL_RAW.CAST_TO_RAW('Alice Bob Resume') WHERE resumeID = 1", "1 row updated.");
 
+                    /* Commit the transaction after all insertions and updates succeed */
                     connection.commit(); 
                     log("\nTables populated successfully!");
                     JOptionPane.showMessageDialog(this, "Tables populated successfully!");
+                /* Rollback the transaction if any SQL error occurs */
                 } catch (SQLException ex) {
                     connection.rollback();
                     log("\nRolled back changes due to error:");
                     log(ex.getMessage());
                     JOptionPane.showMessageDialog(this, "Error populating tables. Rolled back changes.\n" + ex.getMessage(),"SQL Error", JOptionPane.ERROR_MESSAGE);
                 }
+            /* Handle connection-level errors */
             } catch (SQLException ex) {
                 log("\nDatabase connection error: " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Database connection error: " + ex.getMessage(),"Database Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         
+         /* Helper for executing and logging SQL statements */
         private void executeAndLog(String sql, String successMessage) {
             try {
                 dbConnection.executeUpdate(sql);
@@ -138,6 +155,7 @@ public class PopulateTables extends JPanel {
             }
         }
 
+        /* Helper to append text to output area */
         private void log(String message) {
             outputArea.append(message + "\n");
         }

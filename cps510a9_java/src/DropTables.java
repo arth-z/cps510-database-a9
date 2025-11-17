@@ -3,10 +3,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
+/* This class allows user to drop (delete) all database tables for the application */
 public class DropTables extends JPanel{
 
-    private final DBConnection dbConnection;
-    private final JTextArea outputArea = new JTextArea(); 
+    private final DBConnection dbConnection;  /* Handles connection to Oracle database */
+    private final JTextArea outputArea = new JTextArea(); /* Displays SQL output and logs */
     
     public DropTables(DB_GUI gui, String username, String password) throws SQLException {
         this.dbConnection = DBConnection.getInstance(username, password);
