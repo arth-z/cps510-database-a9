@@ -3,18 +3,17 @@ import java.awt.*;
 import java.sql.*; 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
-public class AddToTables extends JPanel {
+public class UpdateTables extends JPanel {
 
     private final DBConnection dbConnection;
 
-    public AddToTables(DB_GUI gui, String username, String password) throws SQLException {
+    public UpdateTables(DB_GUI gui, String username, String password) throws SQLException {
         this.dbConnection = DBConnection.getInstance(username, password);
 
         setLayout(new BorderLayout());
 
-        JLabel title = new JLabel("Add To Tables", SwingConstants.CENTER);
+        JLabel title = new JLabel("Update Tables", SwingConstants.CENTER);
         title.setFont(new Font("Times New Roman", Font.BOLD, 28));
         add(title, BorderLayout.NORTH);
 
@@ -74,30 +73,30 @@ public class AddToTables extends JPanel {
                 JTextField phone = new JTextField();
 
                 Object[] queryValues = {
-                    "Company ID (mandatory int, unique):", companyID,
-                    "Name (mandatory, unique):", name,
-                    "Industry:", industry,
-                    "Location:", location,
-                    "Email:", email,
-                    "Phone:", phone
+                    "Company ID to update (match this to an existing company):", companyID,
+                    "New Name (mandatory, unique):", name,
+                    "New Industry:", industry,
+                    "New Location:", location,
+                    "New Email:", email,
+                    "New Phone:", phone
                 };
 
-                int option = JOptionPane.showConfirmDialog(null, queryValues, "Insert New Company", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, queryValues, "Update Company", JOptionPane.OK_CANCEL_OPTION);
 
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "INSERT INTO Company (companyID, name, industry, location, email, phone) VALUES (?, ?, ?, ?, ?, ?)";
+                    String insertSQL = "UPDATE Company SET name = ?, industry = ?, location = ?, email = ?, phone = ? WHERE companyID = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
                     // the following here go into the question marks of the prepared statem in order, basically
-                    pstmt.setInt(1, Integer.parseInt(companyID.getText()));
-                    pstmt.setString(2, name.getText());
-                    pstmt.setString(3, industry.getText());
-                    pstmt.setString(4, location.getText());
-                    pstmt.setString(5, email.getText());
-                    pstmt.setString(6, phone.getText());
+                    pstmt.setInt(6, Integer.parseInt(companyID.getText()));
+                    pstmt.setString(1, name.getText());
+                    pstmt.setString(2, industry.getText());
+                    pstmt.setString(3, location.getText());
+                    pstmt.setString(4, email.getText());
+                    pstmt.setString(5, phone.getText());
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "New company added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Company updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                         // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
@@ -105,7 +104,7 @@ public class AddToTables extends JPanel {
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Failed to add new company.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Failed to update company.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
@@ -127,30 +126,30 @@ public class AddToTables extends JPanel {
                 JTextField phone = new JTextField();
 
                 Object[] queryValues = {
-                    "RecruiterID (mandatory int, unique):", recruiterID,
-                    "CompanyID (mandatory, reference to Company table):", companyID,
-                    "First Name:", first_name,
-                    "Last Name:", last_name,
-                    "Email:", email,
-                    "Phone:", phone
+                    "RecruiterID to update (match this to an existing recruiter):", recruiterID,
+                    "New CompanyID (mandatory, reference to Company table):", companyID,
+                    "New First Name:", first_name,
+                    "New Last Name:", last_name,
+                    "New Email:", email,
+                    "New Phone:", phone
                 };
 
-                int option = JOptionPane.showConfirmDialog(null, queryValues, "Insert New Recruiter", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, queryValues, "Update Recruiter", JOptionPane.OK_CANCEL_OPTION);
 
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "INSERT INTO Recruiter (recruiterID, companyID, first_name, last_name, email, phone) VALUES (?, ?, ?, ?, ?, ?)";
+                    String insertSQL = "UPDATE Recruiter SET companyID = ?, first_name = ?, last_name = ?, email = ?, phone = ? WHERE recruiterID = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
                     // the following here go into the question marks of the prepared statem in order, basically
-                    pstmt.setInt(1, Integer.parseInt(recruiterID.getText()));
-                    pstmt.setInt(2, Integer.parseInt(companyID.getText()));
-                    pstmt.setString(3, first_name.getText());
-                    pstmt.setString(4, last_name.getText());
-                    pstmt.setString(5, email.getText());
-                    pstmt.setString(6, phone.getText());
+                    pstmt.setInt(6, Integer.parseInt(recruiterID.getText()));
+                    pstmt.setInt(1, Integer.parseInt(companyID.getText()));
+                    pstmt.setString(2, first_name.getText());
+                    pstmt.setString(3, last_name.getText());
+                    pstmt.setString(4, email.getText());
+                    pstmt.setString(5, phone.getText());
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "New recruiter added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Recruiter updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                         // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
@@ -158,7 +157,7 @@ public class AddToTables extends JPanel {
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Failed to add new recruiter.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Failed to update recruiter.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
@@ -182,41 +181,41 @@ public class AddToTables extends JPanel {
                 JTextField description = new JTextField();
 
                 Object[] queryValues = {
-                    "JobID (mandatory int, unique):", jobID,
-                    "CompanyID (mandatory, reference to Company table):", companyID,
-                    "RecruiterID (mandatory, reference to Recruiter table):", recruiterID,
-                    "Salary:", salary,
-                    "Date Posted (YYYY-MM-DD):", datePosted,
-                    "Location:", location,
-                    "Title (mandatory):", title,
-                    "Description (mandatory):", description
+                    "JobID to update (match this to the existing job):", jobID,
+                    "New CompanyID (mandatory, reference to Company table):", companyID,
+                    "New RecruiterID (mandatory, reference to Recruiter table):", recruiterID,
+                    "New Salary:", salary,
+                    "New Date Posted (YYYY-MM-DD):", datePosted,
+                    "New Location:", location,
+                    "New Title (mandatory):", title,
+                    "New Description (mandatory):", description
                 };
 
-                int option = JOptionPane.showConfirmDialog(null, queryValues, "Insert New Job", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, queryValues, "Update Job", JOptionPane.OK_CANCEL_OPTION);
 
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "INSERT INTO Job (jobID, companyID, recruiterID, salary, datePosted, location, title, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    String insertSQL = "UPDATE Job SET companyID = ?, recruiterID = ?, salary = ?, datePosted = ?, location = ?, title = ?, description = ? WHERE jobID = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
                     // the following here go into the question marks of the prepared statem in order, basically
-                    pstmt.setInt(1, Integer.parseInt(jobID.getText()));
-                    pstmt.setInt(2, Integer.parseInt(companyID.getText()));
-                    pstmt.setInt(3, Integer.parseInt(recruiterID.getText()));
-                    pstmt.setInt(4, Integer.parseInt(salary.getText()));
-                    pstmt.setDate(5, Date.valueOf(datePosted.getText()));
-                    pstmt.setString(6, location.getText());
-                    pstmt.setString(7, title.getText());
-                    pstmt.setString(8, description.getText());
+                    pstmt.setInt(8, Integer.parseInt(jobID.getText()));
+                    pstmt.setInt(1, Integer.parseInt(companyID.getText()));
+                    pstmt.setInt(2, Integer.parseInt(recruiterID.getText()));
+                    pstmt.setInt(3, Integer.parseInt(salary.getText()));
+                    pstmt.setDate(4, Date.valueOf(datePosted.getText()));
+                    pstmt.setString(5, location.getText());
+                    pstmt.setString(6, title.getText());
+                    pstmt.setString(7, description.getText());
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "New job added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Job updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                         // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Failed to add new job.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Failed to update job.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
@@ -240,41 +239,41 @@ public class AddToTables extends JPanel {
                 JTextField phone = new JTextField();
 
                 Object[] queryValues = {
-                    "ApplicantID (mandatory int, unique):", applicantID,
-                    "First Name (mandatory):", first_name,
-                    "Last Name:", last_name,
-                    "Industry:", industry,
-                    "Birthdate (YYYY-MM-DD):", birthDate,
-                    "Address:", address,
-                    "Email:", email,
-                    "Phone:", phone
+                    "ApplicantID to update (match this to an existing applicant):", applicantID,
+                    "New First Name (mandatory):", first_name,
+                    "New Last Name:", last_name,
+                    "New Industry:", industry,
+                    "New Birthdate (YYYY-MM-DD):", birthDate,
+                    "New Address:", address,
+                    "New Email:", email,
+                    "New Phone:", phone
                 };
 
-                int option = JOptionPane.showConfirmDialog(null, queryValues, "Insert New Job Applicant", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, queryValues, "Update Job Applicant", JOptionPane.OK_CANCEL_OPTION);
 
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "INSERT INTO JobApplicant (applicantID, first_name, last_name, industry, birthDate, address, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    String insertSQL = "UPDATE JobApplicant SET first_name = ?, last_name = ?, industry = ?, birthdate = ?, address = ?, email = ?, phone = ? WHERE applicantID = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
                     // the following here go into the question marks of the prepared statem in order, basically
-                    pstmt.setInt(1, Integer.parseInt(applicantID.getText()));
-                    pstmt.setString(2, first_name.getText());
-                    pstmt.setString(3, last_name.getText());
-                    pstmt.setString(4, industry.getText());
-                    pstmt.setDate(5, Date.valueOf(birthDate.getText()));
-                    pstmt.setString(6, address.getText());
-                    pstmt.setString(7, email.getText());
-                    pstmt.setString(8, phone.getText());
+                    pstmt.setInt(8, Integer.parseInt(applicantID.getText()));
+                    pstmt.setString(1, first_name.getText());
+                    pstmt.setString(2, last_name.getText());
+                    pstmt.setString(3, industry.getText());
+                    pstmt.setDate(4, Date.valueOf(birthDate.getText()));
+                    pstmt.setString(5, address.getText());
+                    pstmt.setString(6, email.getText());
+                    pstmt.setString(7, phone.getText());
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "New job applicant added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Job applicant updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                         // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Failed to add new job applicant.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Failed to update job applicant.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
@@ -295,35 +294,35 @@ public class AddToTables extends JPanel {
                 JTextField status = new JTextField();
 
                 Object[] queryValues = {
-                    "JobAppID (mandatory int, unique):", jobAppID,
-                    "JobID (mandatory, reference to Job table):", jobID,
-                    "ApplicantID (mandatory, reference to JobApplicant table):", applicantID,
-                    "Date (YYYY-MM-DD):", dateTime,
-                    "Status:", status
+                    "JobAppID to update (match this to an existing job application):", jobAppID,
+                    "New JobID (mandatory, reference to Job table):", jobID,
+                    "New ApplicantID (mandatory, reference to JobApplicant table):", applicantID,
+                    "New Date (YYYY-MM-DD):", dateTime,
+                    "New Status:", status
                 };
 
-                int option = JOptionPane.showConfirmDialog(null, queryValues, "Insert New Job Application", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, queryValues, "Update Job Application", JOptionPane.OK_CANCEL_OPTION);
 
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "INSERT INTO JobApplication (jobAppID, jobID, applicantID, dateTime, status) VALUES (?, ?, ?, ?, ?)";
+                    String insertSQL = "UPDATE JobApplication SET jobID = ?, applicantID = ?, dateTime = ?, status = ? WHERE jobAppID = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
                     // the following here go into the question marks of the prepared statem in order, basically
-                    pstmt.setInt(1, Integer.parseInt(jobAppID.getText()));
-                    pstmt.setInt(2, Integer.parseInt(jobID.getText()));
-                    pstmt.setInt(3, Integer.parseInt(applicantID.getText()));
-                    pstmt.setDate(4, Date.valueOf(dateTime.getText()));
-                    pstmt.setString(5, status.getText());
+                    pstmt.setInt(5, Integer.parseInt(jobAppID.getText()));
+                    pstmt.setInt(1, Integer.parseInt(jobID.getText()));
+                    pstmt.setInt(2, Integer.parseInt(applicantID.getText()));
+                    pstmt.setDate(3, Date.valueOf(dateTime.getText()));
+                    pstmt.setString(4, status.getText());
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "New job application added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Job application updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                         // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Failed to add new job application.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Failed to update job application.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
@@ -353,33 +352,33 @@ public class AddToTables extends JPanel {
                 });
 
                 Object[] queryValues = {
-                    "ResumeID (mandatory int, unique):", resumeID,
-                    "ApplicantID (mandatory, reference to JobApplicant table):", applicantID,
-                    "Upload File (enter file path):", pickFileButton,
-                    "Upload Date (YYYY-MM-DD):", uploadDate
+                    "ResumeID to update (match this to an existing resume):", resumeID,
+                    "New ApplicantID (mandatory, reference to JobApplicant table):", applicantID,
+                    "New Upload File (enter file path):", pickFileButton,
+                    "New Upload Date (YYYY-MM-DD):", uploadDate
                 };
 
-                int option = JOptionPane.showConfirmDialog(null, queryValues, "Insert New Resume", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, queryValues, "Update Resume", JOptionPane.OK_CANCEL_OPTION);
 
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "INSERT INTO Resume (resumeID, applicantID, uploadFile, uploadDate) VALUES (?, ?, ?, ?)";
+                    String insertSQL = "UPDATE Resume SET applicantID = ?, uploadFile = ?, uploadDate = ? WHERE resumeID = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
                     // the following here go into the question marks of the prepared statem in order, basically
-                    pstmt.setInt(1, Integer.parseInt(resumeID.getText()));
-                    pstmt.setInt(2, Integer.parseInt(applicantID.getText()));
-                    pstmt.setBlob(3, convertFileToInputStream(pickFileButton.getText().equals("Pick a file") ? null : pickFileButton.getText()));
-                    pstmt.setDate(4, Date.valueOf(uploadDate.getText()));
+                    pstmt.setInt(4, Integer.parseInt(resumeID.getText()));
+                    pstmt.setInt(1, Integer.parseInt(applicantID.getText()));
+                    pstmt.setBlob(2, convertFileToInputStream(pickFileButton.getText().equals("Pick a file") ? null : pickFileButton.getText()));
+                    pstmt.setDate(3, Date.valueOf(uploadDate.getText()));
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "New resume added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Resume updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                         // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Failed to add new resume.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Failed to update resume - no rows affected.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
@@ -410,33 +409,33 @@ public class AddToTables extends JPanel {
                 JTextField location = new JTextField();
 
                 Object[] queryValues = {
-                    "InterviewID (mandatory int, unique):", interviewID,
-                    "JobAppID (mandatory, reference to JobApplication table):", jobAppID,
-                    "Date (YYYY-MM-DD):", dateTime,
-                    "Location:", location
+                    "InterviewID to update (match this to an existing interview):", interviewID,
+                    "New JobAppID (mandatory, reference to JobApplication table):", jobAppID,
+                    "New Date (YYYY-MM-DD):", dateTime,
+                    "New Location:", location
                 };
 
-                int option = JOptionPane.showConfirmDialog(null, queryValues, "Insert New Interview", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, queryValues, "Update Interview", JOptionPane.OK_CANCEL_OPTION);
 
                 if (option == JOptionPane.OK_OPTION) {
-                    String insertSQL = "INSERT INTO Interview (interviewID, jobAppID, dateTime, location) VALUES (?, ?, ?, ?)";
+                    String insertSQL = "UPDATE Interview SET jobAppID = ?, dateTime = ?, location = ? WHERE interviewID = ?";
                     PreparedStatement pstmt = dbConnection.getConnection().prepareStatement(insertSQL);
                     // the following here go into the question marks of the prepared statem in order, basically
-                    pstmt.setInt(1, Integer.parseInt(interviewID.getText()));
-                    pstmt.setInt(2, Integer.parseInt(jobAppID.getText()));
-                    pstmt.setDate(3, Date.valueOf(dateTime.getText()));
-                    pstmt.setString(4, location.getText());
+                    pstmt.setInt(4, Integer.parseInt(interviewID.getText()));
+                    pstmt.setInt(1, Integer.parseInt(jobAppID.getText()));
+                    pstmt.setDate(2, Date.valueOf(dateTime.getText()));
+                    pstmt.setString(3, location.getText());
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
-                        JOptionPane.showMessageDialog(null, "New interview added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Interview updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                         // show the updated table
                         ResultSet rs = dbConnection.executeQuery(query);
                         JTable table = new JTable(DB_GUI.buildTableModel(rs));
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Updated Table", JOptionPane.INFORMATION_MESSAGE);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Failed to add new interview.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Failed to update interview.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 

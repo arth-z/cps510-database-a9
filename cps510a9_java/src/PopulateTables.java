@@ -95,13 +95,13 @@ public class PopulateTables extends JPanel {
                     executeAndLog("INSERT INTO JobApplication (jobAppID, jobID, applicantID, dateTime, status) VALUES (6, 4, 6, TO_DATE('2025-09-30', 'YYYY-MM-DD'), 'Interview Pending')", "1 row inserted.");
                     executeAndLog("INSERT INTO JobApplication (jobAppID, jobID, applicantID, dateTime, status) VALUES (7, 4, 5, TO_DATE('2025-10-04', 'YYYY-MM-DD'), 'Interview Pending')", "1 row inserted.");
 
-                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, upload_file, uploadDate) VALUES (1, 1, UTL_RAW.CAST_TO_RAW('Alice Bob'), TO_DATE('2002-04-13', 'YYYY-MM-DD'))", "1 row inserted.");
-                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, upload_file, uploadDate) VALUES (2, 2, UTL_RAW.CAST_TO_RAW('Jake Blake Resume'), TO_DATE('2025-09-28', 'YYYY-MM-DD'))", "1 row inserted.");
-                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, upload_file, uploadDate) VALUES (3, 3, UTL_RAW.CAST_TO_RAW('Griffin Walker Resume'), TO_DATE('2025-09-29', 'YYYY-MM-DD'))", "1 row inserted.");
-                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, upload_file, uploadDate) VALUES (4, 4, UTL_RAW.CAST_TO_RAW('Ed Stephens Resume'), TO_DATE('2025-09-28', 'YYYY-MM-DD'))", "1 row inserted.");
-                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, upload_file, uploadDate) VALUES (5, 5, UTL_RAW.CAST_TO_RAW('Joe Random Resume'), TO_DATE('2025-09-29', 'YYYY-MM-DD'))", "1 row inserted.");
-                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, upload_file, uploadDate) VALUES (6, 6, UTL_RAW.CAST_TO_RAW('Michael Jordan Resume'), TO_DATE('2025-09-30', 'YYYY-MM-DD'))", "1 row inserted.");
-                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, upload_file, uploadDate) VALUES (7, 6, UTL_RAW.CAST_TO_RAW('Michael Jordan Resume 2'), TO_DATE('2025-10-04', 'YYYY-MM-DD'))", "1 row inserted.");
+                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, uploadFile, uploadDate) VALUES (1, 1, UTL_RAW.CAST_TO_RAW('Alice Bob'), TO_DATE('2002-04-13', 'YYYY-MM-DD'))", "1 row inserted.");
+                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, uploadFile, uploadDate) VALUES (2, 2, UTL_RAW.CAST_TO_RAW('Jake Blake Resume'), TO_DATE('2025-09-28', 'YYYY-MM-DD'))", "1 row inserted.");
+                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, uploadFile, uploadDate) VALUES (3, 3, UTL_RAW.CAST_TO_RAW('Griffin Walker Resume'), TO_DATE('2025-09-29', 'YYYY-MM-DD'))", "1 row inserted.");
+                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, uploadFile, uploadDate) VALUES (4, 4, UTL_RAW.CAST_TO_RAW('Ed Stephens Resume'), TO_DATE('2025-09-28', 'YYYY-MM-DD'))", "1 row inserted.");
+                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, uploadFile, uploadDate) VALUES (5, 5, UTL_RAW.CAST_TO_RAW('Joe Random Resume'), TO_DATE('2025-09-29', 'YYYY-MM-DD'))", "1 row inserted.");
+                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, uploadFile, uploadDate) VALUES (6, 6, UTL_RAW.CAST_TO_RAW('Michael Jordan Resume'), TO_DATE('2025-09-30', 'YYYY-MM-DD'))", "1 row inserted.");
+                    executeAndLog("INSERT INTO Resume (resumeID, applicantID, uploadFile, uploadDate) VALUES (7, 6, UTL_RAW.CAST_TO_RAW('Michael Jordan Resume 2'), TO_DATE('2025-10-04', 'YYYY-MM-DD'))", "1 row inserted.");
                     
                     executeAndLog("INSERT INTO Interview (interviewID, jobAppID, dateTime, location) VALUES (1, 4, TO_DATE('2025-10-1 10:00 AM', 'YYYY-MM-DD HH:MI AM'), 'Toronto, Ontario, Canada')", "1 row inserted.");
                     executeAndLog("INSERT INTO Interview (interviewID, jobAppID, dateTime, location) VALUES (2, 5, TO_DATE('2025-10-2 11:00 AM', 'YYYY-MM-DD HH:MI AM'), 'Markham, Ontario, Canada')", "1 row inserted.");
@@ -111,7 +111,7 @@ public class PopulateTables extends JPanel {
                     executeAndLog("UPDATE Company SET location = 'Toronto, Ontario, Canada' WHERE companyID = 1", "1 row updated.");
                     executeAndLog("UPDATE Company SET industry = 'Technology' WHERE companyID = 1", "1 row updated.");
                     executeAndLog("UPDATE Resume SET uploadDate = TO_DATE('2025-09-27', 'YYYY-MM-DD') WHERE resumeID = 1", "1 row updated.");
-                    executeAndLog("UPDATE Resume SET upload_file = UTL_RAW.CAST_TO_RAW('Alice Bob Resume') WHERE resumeID = 1", "1 row updated.");
+                    executeAndLog("UPDATE Resume SET uploadFile = UTL_RAW.CAST_TO_RAW('Alice Bob Resume') WHERE resumeID = 1", "1 row updated.");
 
                     connection.commit(); 
                     log("\nTables populated successfully!");

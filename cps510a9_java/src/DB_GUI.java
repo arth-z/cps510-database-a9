@@ -45,12 +45,12 @@ public class DB_GUI extends JFrame {
         JButton populateButton = new JButton("Populate Tables");
         JButton viewButton = new JButton("View Tables");
         JButton queryButton = new JButton("Query Tables");
-        JButton modifyButton = new JButton("Modify Tables");
+        JButton updateButton = new JButton("Update Tables");
         JButton addButton = new JButton("Add to Tables");
         JButton deleteButton = new JButton("Delete from Tables");
         JButton exitButton = new JButton("Exit");
 
-        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, modifyButton, addButton, deleteButton, exitButton};
+        JButton[] buttons = {createButton, dropButton, populateButton, viewButton, queryButton, updateButton, addButton, deleteButton, exitButton};
 
         for (JButton button : buttons) {
             button.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -65,7 +65,7 @@ public class DB_GUI extends JFrame {
         // viewButton.addActionListener(e -> cardLayout.show(mainPanel, "View Tables"));
         queryButton.addActionListener(e -> showQueryTables());
         viewButton.addActionListener(e -> showViewTables());
-        modifyButton.addActionListener(e -> showModifyTables());
+        updateButton.addActionListener(e -> showUpdateTables());
         addButton.addActionListener(e -> showAddToTables());
         deleteButton.addActionListener(e -> showDeleteFromTables());
         exitButton.addActionListener(e -> System.exit(0));
@@ -177,14 +177,14 @@ public class DB_GUI extends JFrame {
         }
     }
 
-    public void showModifyTables() {
+    public void showUpdateTables() {
         try {
-            ModifyTables modifyTablesPanel = new ModifyTables(this, username, password);
-            mainPanel.add(modifyTablesPanel, "ModifyTables");
-            cardLayout.show(mainPanel, "ModifyTables");
+            UpdateTables updateTablesPanel = new UpdateTables(this, username, password);
+            mainPanel.add(updateTablesPanel, "UpdateTables");
+            cardLayout.show(mainPanel, "UpdateTables");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Error loading ModifyTables panel: " + e.getMessage(),
+                "Error loading UpdateTables panel: " + e.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         }
@@ -192,8 +192,8 @@ public class DB_GUI extends JFrame {
 
     public void showAddToTables() {
         try {
-            AddToTables modifyTablesPanel = new AddToTables(this, username, password);
-            mainPanel.add(modifyTablesPanel, "AddToTables");
+            AddToTables updateTablesPanel = new AddToTables(this, username, password);
+            mainPanel.add(updateTablesPanel, "AddToTables");
             cardLayout.show(mainPanel, "AddToTables");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
@@ -204,7 +204,16 @@ public class DB_GUI extends JFrame {
     }
 
     public void showDeleteFromTables() {
-        // nothing here yet
+        try {
+            DeleteFromTables updateTablesPanel = new DeleteFromTables(this, username, password);
+            mainPanel.add(updateTablesPanel, "DeleteFromTables");
+            cardLayout.show(mainPanel, "DeleteFromTables");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error loading DeleteFromTables panel: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void setCredentials(String username, String password) {
