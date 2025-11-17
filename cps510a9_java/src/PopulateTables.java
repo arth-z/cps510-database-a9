@@ -25,7 +25,7 @@ public class PopulateTables extends JPanel {
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-        JButton executeButton = new JButton("Populate Tables (Default)");
+        JButton executeButton = new JButton("Populate Tables");
         executeButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
         executeButton.addActionListener(e -> populateTables());
 

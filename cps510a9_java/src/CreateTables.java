@@ -24,7 +24,7 @@ public class CreateTables extends JPanel {
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-        JButton executeButton = new JButton("Create Tables (Default)");
+        JButton executeButton = new JButton("Create Tables");
         executeButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
         executeButton.addActionListener(e -> createTables());
 
