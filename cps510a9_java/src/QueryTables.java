@@ -162,6 +162,7 @@ public class QueryTables extends JPanel {
     }
 
 //Function that lets the buttons be clickable and converts the query results to a table in a popup message and shows a success message if it executes without errors
+//and error messages if there are errors
     private void attachQueryButton(JButton button, String query) {
         button.addActionListener(e -> {
             try {
