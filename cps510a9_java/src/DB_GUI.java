@@ -12,8 +12,10 @@ public class DB_GUI extends JFrame {
     private JPanel mainPanel;        /* Container for all screens (login, main menu, etc.) */
     private String username;         /* Stores Oracle username for database access */
     private String password;         /* Stores Oracle password for database access */
-    private String userRole;   /* Stores selected user role */
-
+    private String userRole;         /* Stores selected user role */
+    private int applicantID;         /* Stores applicantID */
+    private int recruiterID;         /* Stores recruiterID */
+    private int companyID;           /* Stores companyID */
 
     /* Sets up the frame, layout, and adds the login and main menu panels */
     public DB_GUI() {
@@ -278,6 +280,31 @@ public class DB_GUI extends JFrame {
         this.userRole = role;
     }
 
+    /* Getters/Setters for applicant, recruiter, and company IDs */
+    public void setApplicantID(int id) {
+        this.applicantID = id;
+    }
+
+    public int getApplicantID() {
+        return applicantID;
+    }
+
+    public void setRecruiterID(int id) {
+        this.recruiterID = id;
+    }
+
+    public int getRecruiterID() {
+        return recruiterID;
+    }
+
+    public void setCompanyID(int id) {
+        this.companyID = id;
+    }
+
+    public int getCompanyID() {
+        return companyID;
+    }
+
 
     /* Adds a new panel to display output (e.g., logs or SQL results) with a back button */
     public void addOutputPanel(String name, JTextArea outputArea) {
@@ -364,8 +391,6 @@ public class DB_GUI extends JFrame {
             }
         );
     }
-
-
 
     /* Main method to launch the GUI application */
     public static void main(String[] args) {

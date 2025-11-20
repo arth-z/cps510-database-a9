@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /* This class represents the login screen for the application. */
 public class Login extends JPanel {
@@ -61,22 +64,71 @@ public class Login extends JPanel {
             String selectedRole = (String) roleSelector.getSelectedItem();
 
             try {
-                /* Test database connection */
                 DBConnection.getInstance(user, pass);
 
-                /* Save credentials + role */
                 gui.setCredentials(user, pass);
                 gui.setUserRole(selectedRole);
 
-                /* Tell DB_GUI to run background initialization */
-                gui.initializeAfterLogin();
+                /* Run DatabaseInitializer for non-admin roles */
+                if (!selectedRole.equals("Database Admin")) {
+                    DatabaseInitializer init = new DatabaseInitializer(user, pass);
+                    init.initialize();
+                }
+
+                /* If applicant logs in, map their email to applicantID */
+                if (selectedRole.equals("Applicant")) {
+                    String email = JOptionPane.showInputDialog(
+                        this,
+                        "Enter your applicant email:",
+                        "Applicant Login",
+                        JOptionPane.QUESTION_MESSAGE
+                    );
+
+                    if (email == null || email.trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Email required.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    /* Query the database */
+                    Connection connection = DBConnection.getInstance(user, pass).getConnection();
+                    PreparedStatement stmt = connection.prepareStatement(
+                        "SELECT applicantID FROM JobApplicant WHERE email = ?"
+                    );
+                    stmt.setString(1, email.trim());
+                    ResultSet rs = stmt.executeQuery();
+
+                    if (!rs.next()) {
+                        JOptionPane.showMessageDialog(this, "No applicant found with this email.", 
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    int applicantID = rs.getInt(1);
+                    gui.setApplicantID(applicantID);
+                    System.out.println("Logged in as applicant: ID = " + applicantID);
+                }
+
+                JOptionPane.showMessageDialog(this, "Login Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                switch (selectedRole) {
+                    case "Applicant":
+                        gui.showApplicantGUI();
+                        break;
+                    case "Recruiter":
+                        gui.showRecruiterGUI();
+                        break;
+                    case "Company":
+                        gui.showCompanyGUI();
+                        break;
+                    default:
+                        gui.showMainMenu();
+                }
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                    "Credentials Entry failed. Check your credentials.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Login failed. Check your credentials.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+
     }
 }
 
