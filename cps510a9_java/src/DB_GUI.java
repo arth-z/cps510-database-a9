@@ -254,11 +254,11 @@ public class DB_GUI extends JFrame {
         cardLayout.show(mainPanel, "ApplicantUI");
     }
 
-    // public void showRecruiterUI() {
-    //     JPanel recruiterPanel = new RecruiterUI(this, username, password);
-    //     mainPanel.add(recruiterPanel, "RecruiterUI");
-    //     cardLayout.show(mainPanel, "RecruiterUI");
-    // }
+    public void showRecruiterGUI() {
+        JPanel recruiterPanel = new Recruiter_GUI(this, username, password);
+        mainPanel.add(recruiterPanel, "RecruiterUI");
+        cardLayout.show(mainPanel, "RecruiterUI");
+    }
 
     // public void showCompanyUI() {
     //     JPanel companyPanel = new CompanyUI(this, username, password);

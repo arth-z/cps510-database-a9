@@ -75,9 +75,9 @@ public class Login extends JPanel {
                     case "Applicant":
                         gui.showApplicantGUI();
                         break;
-                    // case "Recruiter":
-                    //     gui.showRecruiterGUI();
-                    //     break;
+                    case "Recruiter":
+                        gui.showRecruiterGUI();
+                        break;
                     // case "Company":
                     //     gui.showCompanyGUI();
                     //     break;
