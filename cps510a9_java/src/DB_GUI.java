@@ -260,11 +260,11 @@ public class DB_GUI extends JFrame {
         cardLayout.show(mainPanel, "RecruiterUI");
     }
 
-    // public void showCompanyUI() {
-    //     JPanel companyPanel = new CompanyUI(this, username, password);
-    //     mainPanel.add(companyPanel, "CompanyUI");
-    //     cardLayout.show(mainPanel, "CompanyUI");
-    // }
+    public void showCompanyGUI() {
+        JPanel companyPanel = new Company_GUI(this, username, password);
+        mainPanel.add(companyPanel, "CompanyUI");
+        cardLayout.show(mainPanel, "CompanyUI");
+    }
 
 
     /* Stores the Oracle login credentials (used for all DB operations) */
