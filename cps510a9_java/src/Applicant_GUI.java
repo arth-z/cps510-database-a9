@@ -255,7 +255,7 @@ public class Applicant_GUI extends  JPanel{
             stmt.executeUpdate();
 
             JOptionPane.showMessageDialog(this,
-                "Application submitted!\nApplication ID: " + nextID,
+                "Application submitted!",
                 "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (SQLException ex) {
