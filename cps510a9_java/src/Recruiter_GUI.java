@@ -12,14 +12,27 @@ public class Recruiter_GUI extends JPanel{
             title.setFont(new Font("Times New Roman", Font.BOLD, 28));
             add(title, BorderLayout.NORTH);
 
-            JTextArea info = new JTextArea();
-            info.setEditable(false);
-            info.setText("Welcome Recruiter!\n\nHere you will:\n- Post jobs\n- Review applicants\n- Schedule interviews");
-            add(info, BorderLayout.CENTER);
+            JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+            Color LightBlue = new Color(173, 216, 230);
 
-            JButton exit = new JButton("Exit");
+            JButton viewRecruiters = new JButton("View Recruiters");
+            JButton addRecruiter = new JButton("Add Recruiter");
+            JButton viewCompanyJobs = new JButton("View Company Jobs");
+            JButton analytics = new JButton("Hiring Analytics");
+            JButton interviews = new JButton("Upcoming Interviews");
+            JButton exit = new JButton("Exit");    
+
+            JButton[] buttons = {viewRecruiters, addRecruiter, viewCompanyJobs, analytics, interviews, exit};
+            
+            for (JButton b : buttons) {
+                b.setFont(new Font("Times New Roman", Font.BOLD, 20));
+                b.setBackground(LightBlue);
+                buttonPanel.add(b);
+            }
+
+            add(buttonPanel, BorderLayout.CENTER);
+            
             exit.addActionListener(e -> System.exit(0));
-            add(exit, BorderLayout.SOUTH);
     }    
     
 }

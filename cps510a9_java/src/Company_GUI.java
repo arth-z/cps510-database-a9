@@ -11,14 +11,27 @@ public class Company_GUI extends JPanel{
             title.setFont(new Font("Times New Roman", Font.BOLD, 28));
             add(title, BorderLayout.NORTH);
 
-            JTextArea info = new JTextArea();
-            info.setEditable(false);
-            info.setText("Welcome Company!\n\nHere you will:\n- Manage job postings\n- View applications\n- Communicate with recruiters");
-            add(info, BorderLayout.CENTER);
+            JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+            Color LightBlue = new Color(173, 216, 230);
 
+            JButton postJob = new JButton("Post a Job");
+            JButton manageJobs = new JButton("Manage Job Listings");
+            JButton viewApplicants = new JButton("View Applicants");
+            JButton scheduleInterview = new JButton("Schedule Interview");
+            JButton evaluate = new JButton("Evaluate Applications");
             JButton exit = new JButton("Exit");
+
+            JButton[] buttons = {postJob, manageJobs, viewApplicants, scheduleInterview, evaluate, exit};
+
+            for (JButton b : buttons) {
+                b.setFont(new Font("Times New Roman", Font.BOLD, 20));
+                b.setBackground(LightBlue);
+                buttonPanel.add(b);
+            }
+
+            add(buttonPanel, BorderLayout.CENTER);
+
             exit.addActionListener(e -> System.exit(0));
-            add(exit, BorderLayout.SOUTH);
     }
     
 }
