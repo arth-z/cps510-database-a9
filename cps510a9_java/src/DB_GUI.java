@@ -248,6 +248,7 @@ public class DB_GUI extends JFrame {
         }
     }
 
+    /* Added menus for the different roles in the application (Applicant, Recruiter, Company) */
     public void showApplicantGUI() {
         JPanel applicantPanel = new Applicant_GUI(this, username, password);
         mainPanel.add(applicantPanel, "ApplicantUI");
