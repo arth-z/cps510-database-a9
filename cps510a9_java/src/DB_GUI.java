@@ -248,6 +248,25 @@ public class DB_GUI extends JFrame {
         }
     }
 
+    public void showApplicantGUI() {
+        JPanel applicantPanel = new Applicant_GUI(this, username, password);
+        mainPanel.add(applicantPanel, "ApplicantUI");
+        cardLayout.show(mainPanel, "ApplicantUI");
+    }
+
+    // public void showRecruiterUI() {
+    //     JPanel recruiterPanel = new RecruiterUI(this, username, password);
+    //     mainPanel.add(recruiterPanel, "RecruiterUI");
+    //     cardLayout.show(mainPanel, "RecruiterUI");
+    // }
+
+    // public void showCompanyUI() {
+    //     JPanel companyPanel = new CompanyUI(this, username, password);
+    //     mainPanel.add(companyPanel, "CompanyUI");
+    //     cardLayout.show(mainPanel, "CompanyUI");
+    // }
+
+
     /* Stores the Oracle login credentials (used for all DB operations) */
     public void setCredentials(String username, String password) {
         this.username = username;

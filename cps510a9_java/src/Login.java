@@ -72,14 +72,14 @@ public class Login extends JPanel {
                 gui.setCredentials(user, pass);
                 /* Navigate based on selected role */
                 switch (selectedRole) {
-                    // case "Applicant":
-                    //     gui.showApplicantUI();
-                    //     break;
+                    case "Applicant":
+                        gui.showApplicantGUI();
+                        break;
                     // case "Recruiter":
-                    //     gui.showRecruiterUI();
+                    //     gui.showRecruiterGUI();
                     //     break;
                     // case "Company":
-                    //     gui.showCompanyUI();
+                    //     gui.showCompanyGUI();
                     //     break;
                     case "Database Admin":
                         gui.showMainMenu();  // existing admin menu
