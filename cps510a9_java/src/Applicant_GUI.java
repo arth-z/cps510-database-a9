@@ -5,7 +5,17 @@ import java.sql.*;
 
 public class Applicant_GUI extends  JPanel{
 
-    public Applicant_GUI(DB_GUI gui, String username, String password) {
+    private final DBConnection dbConnection; 
+    private final String username;
+    private final String password;
+
+
+    public Applicant_GUI(DB_GUI gui, String username, String password) throws SQLException {
+        
+        this.dbConnection = DBConnection.getInstance(username, password); 
+        this.username = username;
+        this.password = password; 
+        
         setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Applicant Dashboard", SwingConstants.CENTER);
@@ -34,7 +44,26 @@ public class Applicant_GUI extends  JPanel{
 
         add(buttonPanel, BorderLayout.CENTER);
 
+        /* Button functionality */
+        browseJobs.addActionListener(e -> browseJobs());
+        // applyJob.addActionListener(e -> applyForJob());
+        // viewApps.addActionListener(e -> viewMyApplications());
+        // viewInterviews.addActionListener(e -> viewMyInterviews());
+        // updateProfile.addActionListener(e -> updateMyProfile());
         exit.addActionListener(e -> System.exit(0));
+    }
+
+    private void browseJobs() {
+        try {
+            ResultSet rs = dbConnection.executeQuery("SELECT * FROM Job");
+            JTable table = new JTable(DB_GUI.buildTableModel(rs));
+
+            JOptionPane.showMessageDialog(this, new JScrollPane(table), "Available Jobs", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
     
 }

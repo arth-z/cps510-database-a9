@@ -249,7 +249,7 @@ public class DB_GUI extends JFrame {
     }
 
     /* Added menus for the different roles in the application (Applicant, Recruiter, Company) */
-    public void showApplicantGUI() {
+    public void showApplicantGUI() throws SQLException {
         JPanel applicantPanel = new Applicant_GUI(this, username, password);
         mainPanel.add(applicantPanel, "ApplicantUI");
         cardLayout.show(mainPanel, "ApplicantUI");
@@ -292,6 +292,80 @@ public class DB_GUI extends JFrame {
         mainPanel.add(panel, name);
         cardLayout.show(mainPanel, name);
     }
+
+    /* Shows a small loading popup while DB initializes */
+    private void showLoadingAndInitialize(Runnable initTask, Runnable onDone) {
+
+        JDialog loading = new JDialog(this, "Loading", true);
+        loading.setLayout(new BorderLayout());
+        loading.setSize(300, 120);
+        loading.setLocationRelativeTo(this);
+        loading.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        JLabel msg = new JLabel("Loading data... please wait", SwingConstants.CENTER);
+        msg.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+        loading.add(msg, BorderLayout.NORTH);
+
+        JProgressBar bar = new JProgressBar();
+        bar.setIndeterminate(true);
+        loading.add(bar, BorderLayout.CENTER);
+
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() {
+                initTask.run();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                loading.dispose();
+                onDone.run();
+            }
+        };
+
+        worker.execute();
+        loading.setVisible(true);
+    }
+
+    /* Handles initialization after login with loading popup */
+    public void initializeAfterLogin() {
+
+        if (userRole.equals("Database Admin")) {
+            showMainMenu();
+            return;
+        }
+
+        showLoadingAndInitialize(
+            () -> {
+                try {
+                    DatabaseInitializer init = new DatabaseInitializer(username, password);
+                    init.initialize();
+                } catch (Exception ex) {
+                    SwingUtilities.invokeLater(() ->
+                        JOptionPane.showMessageDialog(this,
+                            "Initialization error:\n" + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE)
+                    );
+                }
+            },
+            () -> {
+                /* Navigation after loading finishes */
+                switch (userRole) {
+                    case "Applicant":  try {
+                            showApplicantGUI();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        } break;
+                    case "Recruiter":  showRecruiterGUI(); break;
+                    case "Company":    showCompanyGUI(); break;
+                }
+            }
+        );
+    }
+
+
 
     /* Main method to launch the GUI application */
     public static void main(String[] args) {

@@ -56,42 +56,25 @@ public class Login extends JPanel {
 
         /* Add event listener for login button. When the button is clicked, it retrieves the entered credentials and attempts to connect to Oracle DB. */
         loginButton.addActionListener(e -> {
-            /* Retrieve user input values */
             String user = userField.getText();
             String pass = new String(passField.getPassword());
-
-            /* Retrieve selected user role */
             String selectedRole = (String) roleSelector.getSelectedItem();
 
             try {
-                /* Attempt to establish database connection using DBConnection instance */
+                /* Test database connection */
                 DBConnection.getInstance(user, pass);
-                /* If successful, display sucess popup */
-                JOptionPane.showMessageDialog(this, "Credentials Entry Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                /* Store credentials in main GUI and navigate to main menu */
+
+                /* Save credentials + role */
                 gui.setCredentials(user, pass);
-                /* Navigate based on selected role */
-                switch (selectedRole) {
-                    case "Applicant":
-                        gui.showApplicantGUI();
-                        break;
-                    case "Recruiter":
-                        gui.showRecruiterGUI();
-                        break;
-                    case "Company":
-                        gui.showCompanyGUI();
-                        break;
-                    case "Database Admin":
-                        gui.showMainMenu();  // existing admin menu
-                        break;
-                    default:
-                        gui.showMainMenu();  // default to admin menu for now
-                        break;
-                }
-            
-            /* If login fails, display error message */
+                gui.setUserRole(selectedRole);
+
+                /* Tell DB_GUI to run background initialization */
+                gui.initializeAfterLogin();
+
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Credentials Entry failed. Check your credentials.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                    "Credentials Entry failed. Check your credentials.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
