@@ -1,7 +1,12 @@
 
 import java.awt.*;
+import java.math.BigDecimal;
+
 import javax.swing.*;
-import java.sql.*; 
+import javax.swing.table.DefaultTableModel;
+
+import java.sql.*;
+import java.util.*; 
 
 public class Applicant_GUI extends  JPanel{
 
@@ -55,15 +60,164 @@ public class Applicant_GUI extends  JPanel{
 
     private void browseJobs() {
         try {
-            ResultSet rs = dbConnection.executeQuery("SELECT * FROM Job");
-            JTable table = new JTable(DB_GUI.buildTableModel(rs));
+            String sql =
+                "SELECT j.jobID, j.title AS \"Job Title\", c.name AS \"Company\", j.location AS \"Location\", " +
+                "j.salary AS \"Salary ($/hr)\", j.workingHours AS \"Hours/Week\", " +
+                "TO_CHAR(j.datePosted, 'YYYY-MM-DD') AS \"Date Posted\", j.description AS \"Description\" " +
+                "FROM Job j " +
+                "JOIN Company c ON j.companyID = c.companyID " +
+                "ORDER BY j.datePosted DESC";
 
-            JOptionPane.showMessageDialog(this, new JScrollPane(table), "Available Jobs", JOptionPane.INFORMATION_MESSAGE);
+            ResultSet rs = dbConnection.executeQuery(sql);
+            DefaultTableModel model = DB_GUI.buildTableModel(rs);
+
+            /* Read-only */
+            Vector<String> columnNames = new Vector<>();
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                columnNames.add(model.getColumnName(i));
+            }
+
+            DefaultTableModel readOnlyModel = new DefaultTableModel(model.getDataVector(), columnNames) {
+                @Override
+                public boolean isCellEditable(int row, int column) { return false; }
+            };
+
+            JTable table = new JTable(readOnlyModel);
+            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            table.setRowHeight(25);
+
+            /* Hide jobID column */
+            table.getColumnModel().getColumn(0).setMinWidth(0);
+            table.getColumnModel().getColumn(0).setMaxWidth(0);
+            table.getColumnModel().getColumn(0).setWidth(0);
+
+            /* Create a panel for the table + buttons */
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JScrollPane(table), BorderLayout.CENTER);
+
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+
+            JButton viewButton = new JButton("View Selected Job");
+            JButton closeButton = new JButton("Close");
+
+            buttonPanel.add(viewButton);
+            buttonPanel.add(closeButton);
+            panel.add(buttonPanel, BorderLayout.SOUTH);
+
+            /* Create a dialog */
+            JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Available Jobs", true);
+            dialog.setContentPane(panel);
+            dialog.setSize(800, 500);
+            dialog.setLocationRelativeTo(this);
+
+            /* Handle button click */
+            viewButton.addActionListener(ev -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(dialog, "Please select a job first.");
+                    return;
+                }
+                
+                Object value = table.getValueAt(row, 0);
+                int jobID;
+
+                if (value instanceof Integer) {
+                    jobID = (Integer) value;
+                } else if (value instanceof BigDecimal) {
+                    jobID = ((BigDecimal) value).intValue();
+                } else {
+                    throw new RuntimeException("Unknown ID type: " + value.getClass());
+                }
+
+                dialog.dispose();
+                showJobDetails(jobID);
+            });
+
+            /* Handle double-click */
+            table.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    if (evt.getClickCount() == 2) {
+                        int row = table.getSelectedRow();
+                        if (row != -1) {
+                            int jobID = (int) table.getValueAt(row, 0);
+                            dialog.dispose();
+                            showJobDetails(jobID);
+                        }
+                    }
+                }
+            });
+
+            /* Close button */
+            closeButton.addActionListener(ev -> dialog.dispose());
+
+            dialog.setVisible(true);
 
         } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
-    
+
+
+    private void showJobDetails(int jobID) {
+        try {
+            String sql =
+                "SELECT j.jobID, j.title, c.name, j.location, j.salary, j.workingHours, " +
+                "TO_CHAR(j.datePosted, 'YYYY-MM-DD'), j.description " +
+                "FROM Job j " +
+                "JOIN Company c ON j.companyID = c.companyID " +
+                "WHERE j.jobID = " + jobID;
+
+            ResultSet rs = dbConnection.executeQuery(sql);
+
+            if (!rs.next()) {
+                JOptionPane.showMessageDialog(this, "Error loading job details.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            /* Build job details message */
+            String details =
+                "Job Title: " + rs.getString(2) + "\n" +
+                "Company: " + rs.getString(3) + "\n" +
+                "Location: " + rs.getString(4) + "\n" +
+                "Salary: $" + rs.getDouble(5) + "/hr\n" +
+                "Hours/Week: " + rs.getDouble(6) + "\n" +
+                "Date Posted: " + rs.getString(7) + "\n\n" +
+                "Description:\n" + rs.getString(8);
+
+            /* Create detail window */
+            JTextArea textArea = new JTextArea(details);
+            textArea.setEditable(false);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(400, 300));
+
+            int option = JOptionPane.showOptionDialog(
+                this,
+                scrollPane,
+                "Job Details",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                new String[]{"Apply for Job", "Close"},
+                "Apply for Job"
+            );
+
+            if (option == 0) {
+                applyForJob(jobID);
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void applyForJob(int jobID) {
+        JOptionPane.showMessageDialog(this, "Feature coming soon: Apply for Job", "Apply", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
+
+
 }
