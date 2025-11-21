@@ -14,14 +14,14 @@ public class Company_GUI extends JPanel{
             JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
             Color LightBlue = new Color(173, 216, 230);
 
-            JButton postJob = new JButton("Post a Job");
-            JButton manageJobs = new JButton("Manage Job Listings");
+            JButton manageJobs = new JButton("View Company Job Listings");
+            JButton manageRecruiters = new JButton("View Recruiters"); 
             JButton viewApplicants = new JButton("View Applicants");
-            JButton scheduleInterview = new JButton("Schedule Interview");
-            JButton evaluate = new JButton("Evaluate Applications");
+            JButton scheduleInterview = new JButton("View Interviews");
+            JButton evaluate = new JButton("View Applications");
             JButton exit = new JButton("Exit");
 
-            JButton[] buttons = {postJob, manageJobs, viewApplicants, scheduleInterview, evaluate, exit};
+            JButton[] buttons = {manageJobs, manageRecruiters, viewApplicants, scheduleInterview, evaluate, exit};
 
             for (JButton b : buttons) {
                 b.setFont(new Font("Times New Roman", Font.BOLD, 20));

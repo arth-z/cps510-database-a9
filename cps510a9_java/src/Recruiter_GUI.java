@@ -17,12 +17,13 @@ public class Recruiter_GUI extends JPanel{
 
             JButton viewRecruiters = new JButton("View Recruiters");
             JButton addRecruiter = new JButton("Add Recruiter");
-            JButton viewCompanyJobs = new JButton("View Company Jobs");
+            JButton createJobs = new JButton("Create Job Posting"); 
+            JButton manageCompanyJobs = new JButton("Manage Company Jobs");
             JButton evaluate = new JButton("Evaluate Applications");
             JButton interviews = new JButton("Upcoming Interviews");
             JButton exit = new JButton("Exit");    
 
-            JButton[] buttons = {viewRecruiters, addRecruiter, viewCompanyJobs, evaluate, interviews, exit};
+            JButton[] buttons = {viewRecruiters, addRecruiter, createJobs, manageCompanyJobs, evaluate, interviews, exit};
             
             for (JButton b : buttons) {
                 b.setFont(new Font("Times New Roman", Font.BOLD, 20));
