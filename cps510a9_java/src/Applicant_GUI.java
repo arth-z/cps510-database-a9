@@ -58,7 +58,7 @@ public class Applicant_GUI extends  JPanel{
         applyJob.addActionListener(e -> openApplyJobWindow());
         viewApps.addActionListener(e -> viewMyApplications());
         viewInterviews.addActionListener(e -> viewMyInterviews());
-        // updateProfile.addActionListener(e -> updateMyProfile());
+        updateProfile.addActionListener(e -> openUpdateProfileWindow());
         exit.addActionListener(e -> System.exit(0));
     }
 
@@ -197,16 +197,7 @@ public class Applicant_GUI extends  JPanel{
             JScrollPane scrollPane = new JScrollPane(textArea);
             scrollPane.setPreferredSize(new Dimension(400, 300));
 
-            int option = JOptionPane.showOptionDialog(
-                this,
-                scrollPane,
-                "Job Details",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.INFORMATION_MESSAGE,
-                null,
-                new String[]{"Apply for Job", "Close"},
-                "Apply for Job"
-            );
+            int option = JOptionPane.showOptionDialog(this, scrollPane, "Job Details", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Apply for Job", "Close"}, "Apply for Job");
 
             if (option == 0) {
                 applyForJob(jobID);
@@ -231,11 +222,7 @@ public class Applicant_GUI extends  JPanel{
             dupRS.next();
 
             if (dupRS.getInt(1) > 0) {
-                JOptionPane.showMessageDialog(this,
-                    "You have already applied for this job.",
-                    "Duplicate Application",
-                    JOptionPane.WARNING_MESSAGE
-                );
+                JOptionPane.showMessageDialog(this, "You have already applied for this job.", "Duplicate Application", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -257,27 +244,16 @@ public class Applicant_GUI extends  JPanel{
             stmt.executeUpdate();
 
             /* Ask user if they want to upload resume */
-            int choice = JOptionPane.showConfirmDialog(
-                    this,
-                    "Application submitted!\nWould you like to upload a resume?",
-                    "Upload Resume?",
-                    JOptionPane.YES_NO_OPTION
-            );
+            int choice = JOptionPane.showConfirmDialog(this, "Application submitted!\nWould you like to upload a resume?", "Upload Resume?", JOptionPane.YES_NO_OPTION);
 
             if (choice == JOptionPane.YES_OPTION) {
                 uploadResume(applicantID);
             }
 
-            JOptionPane.showMessageDialog(this,
-                "Application complete.",
-                "Success",
-                JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Application complete.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this,
-                "Error: " + ex.getMessage(),
-                "SQL Error",
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -443,8 +419,7 @@ public class Applicant_GUI extends  JPanel{
             viewAppBtn.addActionListener(ev -> {
                 int row = table.getSelectedRow();
                 if (row == -1) {
-                    JOptionPane.showMessageDialog(this, "Select an application first.",
-                            "Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Select an application first.", "Error", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
@@ -475,8 +450,7 @@ public class Applicant_GUI extends  JPanel{
             );
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(),
-                    "SQL Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -558,8 +532,7 @@ public class Applicant_GUI extends  JPanel{
             viewBtn.addActionListener(ev -> {
                 int row = table.getSelectedRow();
                 if (row == -1) {
-                    JOptionPane.showMessageDialog(this, "Select an interview first.",
-                            "Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Select an interview first.", "Error", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
@@ -582,16 +555,10 @@ public class Applicant_GUI extends  JPanel{
             panel.add(scrollPane, BorderLayout.CENTER);
             panel.add(viewBtn, BorderLayout.SOUTH);
 
-            JOptionPane.showMessageDialog(
-                this,
-                panel,
-                "My Interviews",
-                JOptionPane.INFORMATION_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, panel, "My Interviews", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(),
-                    "SQL Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -622,12 +589,119 @@ public class Applicant_GUI extends  JPanel{
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(viewJobBtn, BorderLayout.SOUTH);
 
-        JOptionPane.showMessageDialog(
-            this,
-            panel,
-            "Interview Details",
-            JOptionPane.PLAIN_MESSAGE
-        );
+        JOptionPane.showMessageDialog(this, panel, "Interview Details", JOptionPane.PLAIN_MESSAGE);
     }
+
+    /* Allows applicant to update their profile information */
+    private void openUpdateProfileWindow() {
+        int applicantID = this.applicantID;
+
+        try {
+            /* Fetch current data */
+            String sql =
+                "SELECT first_name, last_name, industry, " +
+                "TO_CHAR(birthdate, 'YYYY-MM-DD'), address, email, phone " +
+                "FROM JobApplicant WHERE applicantID = ?";
+
+            PreparedStatement stmt = dbConnection.getConnection().prepareStatement(sql);
+            stmt.setInt(1, applicantID);
+
+            ResultSet rs = stmt.executeQuery();
+            if (!rs.next()) {
+                JOptionPane.showMessageDialog(this, "Applicant profile not found.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            /* Build form fields */
+            JTextField firstField = new JTextField(rs.getString(1), 20);
+            JTextField lastField = new JTextField(rs.getString(2), 20);
+            JTextField industryField = new JTextField(rs.getString(3), 20);
+            JTextField birthField = new JTextField(rs.getString(4), 20);
+            JTextField addressField = new JTextField(rs.getString(5), 20);
+            JTextField emailField = new JTextField(rs.getString(6), 20);
+            JTextField phoneField = new JTextField(rs.getString(7), 20);
+
+            JPanel form = new JPanel(new GridLayout(7, 2, 10, 10));
+            form.add(new JLabel("First Name:"));   form.add(firstField);
+            form.add(new JLabel("Last Name:"));    form.add(lastField);
+            form.add(new JLabel("Industry:"));     form.add(industryField);
+            form.add(new JLabel("Birthdate (YYYY-MM-DD):")); form.add(birthField);
+            form.add(new JLabel("Address:"));      form.add(addressField);
+            form.add(new JLabel("Email:"));        form.add(emailField);
+            form.add(new JLabel("Phone:"));        form.add(phoneField);
+
+            int option = JOptionPane.showOptionDialog(
+                this,
+                form,
+                "Update Profile",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                new String[]{"Save Changes", "Cancel"},
+                "Save Changes"
+            );
+
+            if (option == 0) {
+                updateApplicantProfile(
+                    applicantID,
+                    firstField.getText().trim(),
+                    lastField.getText().trim(),
+                    industryField.getText().trim(),
+                    birthField.getText().trim(),
+                    addressField.getText().trim(),
+                    emailField.getText().trim(),
+                    phoneField.getText().trim()
+                );
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error loading profile: " + ex.getMessage(),
+                    "SQL Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /* Saves updated profile information to the database */
+    private void updateApplicantProfile(int applicantID, String first, String last, String industry, String birth, String address, String email, String phone) {
+
+        /* Basic validation */
+        if (first.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "First name cannot be empty.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!email.contains("@")) {
+            JOptionPane.showMessageDialog(this, "Invalid email format.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            String sql =
+                "UPDATE JobApplicant " +
+                "SET first_name=?, last_name=?, industry=?, birthdate=TO_DATE(?, 'YYYY-MM-DD'), " +
+                "address=?, email=?, phone=? " +
+                "WHERE applicantID=?";
+
+            PreparedStatement stmt = dbConnection.getConnection().prepareStatement(sql);
+            stmt.setString(1, first);
+            stmt.setString(2, last);
+            stmt.setString(3, industry);
+            stmt.setString(4, birth);
+            stmt.setString(5, address);
+            stmt.setString(6, email);
+            stmt.setString(7, phone);
+            stmt.setInt(8, applicantID);
+
+            stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Profile updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error updating profile: " + ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
 
 }
