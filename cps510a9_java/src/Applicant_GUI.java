@@ -218,55 +218,6 @@ public class Applicant_GUI extends  JPanel{
     }
 
     /* From browseJobs() screen, applicant wants to apply for job they selected */
-    // private void applyForJob(int jobID) {
-    //     int applicantID = this.applicantID;
-
-    //     try {
-    //         /* Check if already applied */
-    //         String dupCheckSQL = "SELECT COUNT(*) FROM JobApplication WHERE jobID = ? AND applicantID = ?";
-    //         PreparedStatement dupStmt = dbConnection.getConnection().prepareStatement(dupCheckSQL);
-    //         dupStmt.setInt(1, jobID);
-    //         dupStmt.setInt(2, applicantID);
-    //         ResultSet dupRS = dupStmt.executeQuery();
-    //         dupRS.next();
-
-    //         if (dupRS.getInt(1) > 0) {
-    //             JOptionPane.showMessageDialog(this,
-    //                 "You have already applied for this job.",
-    //                 "Duplicate Application",
-    //                 JOptionPane.WARNING_MESSAGE
-    //             );
-    //             return;
-    //         }
-
-    //         /* Next jobAppID */
-    //         String nextIDSQL = "SELECT NVL(MAX(jobAppID), 0) + 1 FROM JobApplication";
-    //         ResultSet nextRS = dbConnection.executeQuery(nextIDSQL);
-    //         nextRS.next();
-    //         int nextID = nextRS.getInt(1);
-
-    //         /* Insert */
-    //         String insertSQL =
-    //             "INSERT INTO JobApplication (jobAppID, jobID, applicantID, dateTime, status) " +
-    //             "VALUES (?, ?, ?, SYSDATE, 'Submitted')";
-
-    //         PreparedStatement stmt = dbConnection.getConnection().prepareStatement(insertSQL);
-    //         stmt.setInt(1, nextID);
-    //         stmt.setInt(2, jobID);
-    //         stmt.setInt(3, applicantID);
-    //         stmt.executeUpdate();
-
-    //         JOptionPane.showMessageDialog(this,
-    //             "Application submitted!",
-    //             "Success", JOptionPane.INFORMATION_MESSAGE);
-
-    //     } catch (SQLException ex) {
-    //         JOptionPane.showMessageDialog(this,
-    //             "Error: " + ex.getMessage(),
-    //             "SQL Error", JOptionPane.ERROR_MESSAGE);
-    //     }
-    // }
-
     private void applyForJob(int jobID) {
         int applicantID = this.applicantID;
 
@@ -328,65 +279,7 @@ public class Applicant_GUI extends  JPanel{
                 "SQL Error",
                 JOptionPane.ERROR_MESSAGE);
         }
-}
-
-
-    /* Applicant accesses Apply for Job screen (from main menu), has to select Job to apply for */
-    // private void openApplyJobWindow() {
-    //     try {
-    //         String sql =
-    //             "SELECT j.jobID, j.title AS \"Job Title\", c.name AS \"Company\", " +
-    //             "j.location AS \"Location\", j.salary AS \"Salary ($/hr)\", " +
-    //             "j.workingHours AS \"Hours/Week\", TO_CHAR(j.datePosted, 'YYYY-MM-DD') AS \"Date Posted\" " +
-    //             "FROM Job j " +
-    //             "JOIN Company c ON j.companyID = c.companyID " +
-    //             "ORDER BY j.datePosted DESC";
-
-    //         ResultSet rs = dbConnection.executeQuery(sql);
-    //         DefaultTableModel model = DB_GUI.buildTableModel(rs);
-
-    //         /* Make model read-only */
-    //         DefaultTableModel readOnlyModel = new DefaultTableModel(model.getDataVector(), getColumnNames(model)) {
-    //             @Override public boolean isCellEditable(int r, int c) { return false; }
-    //         };
-
-    //         JTable table = new JTable(readOnlyModel);
-
-    //         /* Hide jobID column */
-    //         table.getColumnModel().getColumn(0).setMinWidth(0);
-    //         table.getColumnModel().getColumn(0).setMaxWidth(0);
-
-    //         JScrollPane scrollPane = new JScrollPane(table);
-
-    //         JButton applyBtn = new JButton("Apply for Selected Job");
-    //         applyBtn.setFont(new Font("Times New Roman", Font.BOLD, 18));
-
-    //         applyBtn.addActionListener(ev -> {
-    //             int row = table.getSelectedRow();
-    //             if (row == -1) {
-    //                 JOptionPane.showMessageDialog(this, "Select a job first.", "Error", JOptionPane.WARNING_MESSAGE);
-    //                 return;
-    //             }
-
-    //             /* Extract jobID safely */
-    //             Object val = table.getValueAt(row, 0);
-    //             int jobID = (val instanceof BigDecimal)
-    //                     ? ((BigDecimal) val).intValue()
-    //                     : Integer.parseInt(val.toString());
-
-    //             applyForJob(jobID);
-    //         });
-
-    //         JPanel panel = new JPanel(new BorderLayout());
-    //         panel.add(scrollPane, BorderLayout.CENTER);
-    //         panel.add(applyBtn, BorderLayout.SOUTH);
-
-    //         JOptionPane.showMessageDialog(this, panel, "Apply for Job", JOptionPane.PLAIN_MESSAGE);
-
-    //     } catch (SQLException ex) {
-    //         JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
-    //     }
-    // }
+    }
 
     /* Applicant accesses Apply for Job screen (from main menu), has to select Job to apply for */
     private void openApplyJobWindow() {
