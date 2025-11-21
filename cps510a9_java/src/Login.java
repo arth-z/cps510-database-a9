@@ -102,7 +102,33 @@ public class Login extends JPanel {
                     gui.setApplicantID(applicantID);
                     System.out.println("Logged in as applicant: ID = " + applicantID);
 
-                } else if (selectedRole.equals("Company")) { 
+                } else if (selectedRole.equals("Recruiter")) { 
+                    String email = JOptionPane.showInputDialog(this, "Enter your recruiter email:", "Recruiter Login", JOptionPane.QUESTION_MESSAGE);
+
+                    if (email == null || email.trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Email required.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    /* Query the database */
+                    Connection connection = DBConnection.getInstance(user, pass).getConnection();
+                    PreparedStatement stmt = connection.prepareStatement(
+                        "SELECT recruiterID FROM Recruiter WHERE email = ?"
+                    );
+                    stmt.setString(1, email.trim());
+                    ResultSet rs = stmt.executeQuery();
+
+                    if (!rs.next()) {
+                        JOptionPane.showMessageDialog(this, "No recruiter found with this email.", 
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    int recruiterID = rs.getInt(1);
+                    gui.setRecruiterID(recruiterID);
+                    System.out.println("Logged in as recruiter: ID = " + recruiterID);
+                    
+                }  else if (selectedRole.equals("Company")) { 
                     String name = JOptionPane.showInputDialog(this, "Enter your company name:", "Company Login", JOptionPane.QUESTION_MESSAGE);
 
                     if (name == null || name.trim().isEmpty()) {
@@ -126,7 +152,7 @@ public class Login extends JPanel {
                     int companyID = rs.getInt(1);
                     gui.setCompanyID(companyID);
                     System.out.println("Logged in as Company: ID = " + companyID);
-                }
+                } 
 
                 JOptionPane.showMessageDialog(this, "Login Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
