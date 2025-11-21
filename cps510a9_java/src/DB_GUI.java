@@ -263,7 +263,7 @@ public class DB_GUI extends JFrame {
         cardLayout.show(mainPanel, "RecruiterUI");
     }
 
-    public void showCompanyGUI() {
+    public void showCompanyGUI() throws SQLException {
         JPanel companyPanel = new Company_GUI(this, username, password);
         mainPanel.add(companyPanel, "CompanyUI");
         cardLayout.show(mainPanel, "CompanyUI");
@@ -386,7 +386,11 @@ public class DB_GUI extends JFrame {
                             e.printStackTrace();
                         } break;
                     case "Recruiter":  showRecruiterGUI(); break;
-                    case "Company":    showCompanyGUI(); break;
+                    case "Company":    try {
+                            showCompanyGUI();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        } break;
                 }
             }
         );

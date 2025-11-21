@@ -4,7 +4,18 @@ import java.sql.*;
 
 public class Company_GUI extends JPanel{
 
-        public Company_GUI(DB_GUI gui, String username, String password) {
+    private final DBConnection dbConnection; 
+    private final String username;
+    private final String password;
+    private final int companyID;
+
+        public Company_GUI(DB_GUI gui, String username, String password) throws SQLException {
+
+            this.dbConnection = DBConnection.getInstance(username, password); 
+            this.username = username;
+            this.password = password; 
+            this.companyID = gui.getCompanyID();
+
             setLayout(new BorderLayout());
 
             JLabel title = new JLabel("Company Dashboard", SwingConstants.CENTER);
@@ -18,10 +29,10 @@ public class Company_GUI extends JPanel{
             JButton manageRecruiters = new JButton("View Recruiters"); 
             JButton viewApplicants = new JButton("View Applicants");
             JButton scheduleInterview = new JButton("View Interviews");
-            JButton evaluate = new JButton("View Applications");
+            JButton viewApps = new JButton("View Applications");
             JButton exit = new JButton("Exit");
 
-            JButton[] buttons = {manageJobs, manageRecruiters, viewApplicants, scheduleInterview, evaluate, exit};
+            JButton[] buttons = {manageJobs, manageRecruiters, viewApplicants, scheduleInterview, viewApps, exit};
 
             for (JButton b : buttons) {
                 b.setFont(new Font("Times New Roman", Font.BOLD, 20));

@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.util.*; 
 
-public class Applicant_GUI extends  JPanel{
+public class Applicant_GUI extends JPanel{
 
     private final DBConnection dbConnection; 
     private final String username;
