@@ -56,7 +56,7 @@ public class Applicant_GUI extends  JPanel{
         /* Button functionality */
         browseJobs.addActionListener(e -> browseJobs());
         applyJob.addActionListener(e -> openApplyJobWindow());
-        // viewApps.addActionListener(e -> viewMyApplications());
+        viewApps.addActionListener(e -> viewMyApplications());
         // viewInterviews.addActionListener(e -> viewMyInterviews());
         // updateProfile.addActionListener(e -> updateMyProfile());
         exit.addActionListener(e -> System.exit(0));
@@ -394,6 +394,126 @@ public class Applicant_GUI extends  JPanel{
                 "Upload Error",
                 JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /* View all applications submitted by the applicant */
+    private void viewMyApplications() {
+        int applicantID = this.applicantID;
+
+        try {
+            String sql =
+                "SELECT " +
+                "    j.title AS \"Job Title\", " +
+                "    c.name AS \"Company\", " +
+                "    j.location AS \"Location\", " +
+                "    a.status AS \"Status\", " +
+                "    TO_CHAR(a.dateTime, 'YYYY-MM-DD') AS \"Date Applied\", " +
+                "    j.jobID AS jobID /* hidden */ " +
+                "FROM JobApplication a " +
+                "JOIN Job j ON a.jobID = j.jobID " +
+                "JOIN Company c ON j.companyID = c.companyID " +
+                "WHERE a.applicantID = ? " +
+                "ORDER BY a.dateTime DESC";
+
+            PreparedStatement stmt = dbConnection.getConnection().prepareStatement(sql);
+            stmt.setInt(1, applicantID);
+            ResultSet rs = stmt.executeQuery();
+
+            DefaultTableModel model = DB_GUI.buildTableModel(rs);
+
+            /* Read-only model */
+            DefaultTableModel readOnlyModel =
+                new DefaultTableModel(model.getDataVector(), getColumnNames(model)) {
+                    @Override public boolean isCellEditable(int r, int c) { return false; }
+                };
+
+            JTable table = new JTable(readOnlyModel);
+            table.setRowHeight(25);
+
+            /* Hide jobID column (last column) */
+            int hiddenCol = table.getColumnCount() - 1;
+            table.getColumnModel().getColumn(hiddenCol).setMinWidth(0);
+            table.getColumnModel().getColumn(hiddenCol).setMaxWidth(0);
+
+            JScrollPane scrollPane = new JScrollPane(table);
+
+            JButton viewAppBtn = new JButton("View Application");
+            viewAppBtn.setFont(new Font("Times New Roman", Font.BOLD, 18));
+
+            viewAppBtn.addActionListener(ev -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Select an application first.",
+                            "Error", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                /* Extract jobID */
+                Object val = table.getValueAt(row, hiddenCol);
+                int jobID = (val instanceof java.math.BigDecimal)
+                        ? ((java.math.BigDecimal) val).intValue()
+                        : Integer.parseInt(val.toString());
+
+                String jobTitle = table.getValueAt(row, 0).toString();
+                String company = table.getValueAt(row, 1).toString();
+                String location = table.getValueAt(row, 2).toString();
+                String status = table.getValueAt(row, 3).toString();
+                String dateApplied = table.getValueAt(row, 4).toString();
+
+                showApplicationDetails(jobID, jobTitle, company, location, status, dateApplied);
+            });
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(scrollPane, BorderLayout.CENTER);
+            panel.add(viewAppBtn, BorderLayout.SOUTH);
+
+            JOptionPane.showMessageDialog(
+                this,
+                panel,
+                "My Applications",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(),
+                    "SQL Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    /* Shows the selected job application details */
+    private void showApplicationDetails(int jobID, String jobTitle, String company, String location, String status, String dateApplied) {
+
+        JTextArea text = new JTextArea(
+            "Job Title: " + jobTitle + "\n" +
+            "Company: " + company + "\n" +
+            "Location: " + location + "\n" +
+            "Status: " + status + "\n" +
+            "Date Applied: " + dateApplied + "\n"
+        );
+
+        text.setEditable(false);
+        text.setLineWrap(true);
+        text.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(text);
+        scrollPane.setPreferredSize(new Dimension(400, 250));
+
+        JButton viewJobBtn = new JButton("View Job Posting");
+        viewJobBtn.setFont(new Font("Times New Roman", Font.BOLD, 16));
+
+        viewJobBtn.addActionListener(ev -> showJobDetails(jobID));
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(viewJobBtn, BorderLayout.SOUTH);
+
+        JOptionPane.showMessageDialog(
+            this,
+            panel,
+            "Application Details",
+            JOptionPane.PLAIN_MESSAGE
+        );
     }
 
 
