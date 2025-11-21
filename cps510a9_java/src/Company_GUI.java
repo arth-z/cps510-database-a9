@@ -3,6 +3,8 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.sql.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Vector;
 
 public class Company_GUI extends JPanel{
@@ -68,6 +70,38 @@ public class Company_GUI extends JPanel{
         };
     }
 
+    /* Extracts a row into a map of columnName → value */
+    private Map<String, Object> extractRow(JTable table, int row) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+        for (int col = 0; col < model.getColumnCount(); col++) {
+            String key = model.getColumnName(col);
+            Object val = model.getValueAt(row, col);
+            map.put(key, val);
+        }
+        return map;
+    }
+
+    /* Displays full details in a scrollable window */
+    private void showDetailsPopup(String title, Map<String, Object> data) {
+        StringBuilder sb = new StringBuilder();
+
+        for (String key : data.keySet()) {
+            sb.append(key).append(": ").append(data.get(key)).append("\n");
+        }
+
+        JTextArea text = new JTextArea(sb.toString());
+        text.setEditable(false);
+        text.setLineWrap(true);
+        text.setWrapStyleWord(true);
+
+        JScrollPane scroll = new JScrollPane(text);
+        scroll.setPreferredSize(new Dimension(400, 300));
+
+        JOptionPane.showMessageDialog(this, scroll, title, JOptionPane.PLAIN_MESSAGE);
+    }
+
     /* View Company Jobs feature */
     private void viewCompanyJobs() {
         try {
@@ -81,12 +115,27 @@ public class Company_GUI extends JPanel{
             ResultSet rs = dbConnection.executeQuery(sql);
             JTable table = new JTable(readOnlyModel(rs));
 
-            JOptionPane.showMessageDialog(this, new JScrollPane(table), "Company Job Listings", JOptionPane.PLAIN_MESSAGE);
+            JButton viewBtn = new JButton("View Selected Job");
+            viewBtn.addActionListener(ev -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Select a job first.");
+                    return;
+                }
+                showDetailsPopup("Job Details", extractRow(table, row));
+            });
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JScrollPane(table), BorderLayout.CENTER);
+            panel.add(viewBtn, BorderLayout.SOUTH);
+
+            JOptionPane.showMessageDialog(this, panel, "Company Job Listings", JOptionPane.PLAIN_MESSAGE);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     /* View Recruiters for the Company */
     private void viewRecruiters() {
@@ -99,12 +148,27 @@ public class Company_GUI extends JPanel{
             ResultSet rs = dbConnection.executeQuery(sql);
             JTable table = new JTable(readOnlyModel(rs));
 
-            JOptionPane.showMessageDialog(this, new JScrollPane(table), "Company Recruiters", JOptionPane.PLAIN_MESSAGE);
+            JButton viewBtn = new JButton("View Selected Recruiter");
+            viewBtn.addActionListener(ev -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Select a recruiter first.");
+                    return;
+                }
+                showDetailsPopup("Recruiter Details", extractRow(table, row));
+            });
 
-        } catch (Exception ex) {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JScrollPane(table), BorderLayout.CENTER);
+            panel.add(viewBtn, BorderLayout.SOUTH);
+
+            JOptionPane.showMessageDialog(this, panel, "Company Recruiters", JOptionPane.PLAIN_MESSAGE);
+
+        } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     /* View Job Applicants for Jobs Posted by the Company */
     private void viewApplicantsForCompany() {
@@ -122,7 +186,21 @@ public class Company_GUI extends JPanel{
             ResultSet rs = dbConnection.executeQuery(sql);
             JTable table = new JTable(readOnlyModel(rs));
 
-            JOptionPane.showMessageDialog(this, new JScrollPane(table), "Applicants for Company Jobs", JOptionPane.PLAIN_MESSAGE);
+            JButton viewBtn = new JButton("View Selected Applicant");
+            viewBtn.addActionListener(ev -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Select an applicant first.");
+                    return;
+                }
+                showDetailsPopup("Applicant Details", extractRow(table, row));
+            });
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JScrollPane(table), BorderLayout.CENTER);
+            panel.add(viewBtn, BorderLayout.SOUTH);
+
+            JOptionPane.showMessageDialog(this, panel, "Applicants for Company Jobs", JOptionPane.PLAIN_MESSAGE);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -146,7 +224,21 @@ public class Company_GUI extends JPanel{
             ResultSet rs = dbConnection.executeQuery(sql);
             JTable table = new JTable(readOnlyModel(rs));
 
-            JOptionPane.showMessageDialog(this, new JScrollPane(table), "Interviews Scheduled", JOptionPane.PLAIN_MESSAGE);
+            JButton viewBtn = new JButton("View Interview Details");
+            viewBtn.addActionListener(ev -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Select an interview first.");
+                    return;
+                }
+                showDetailsPopup("Interview Details", extractRow(table, row));
+            });
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JScrollPane(table), BorderLayout.CENTER);
+            panel.add(viewBtn, BorderLayout.SOUTH);
+
+            JOptionPane.showMessageDialog(this, panel, "Interviews Scheduled", JOptionPane.PLAIN_MESSAGE);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -169,7 +261,21 @@ public class Company_GUI extends JPanel{
             ResultSet rs = dbConnection.executeQuery(sql);
             JTable table = new JTable(readOnlyModel(rs));
 
-            JOptionPane.showMessageDialog(this, new JScrollPane(table), "All Applications", JOptionPane.PLAIN_MESSAGE);
+            JButton viewBtn = new JButton("View Application Details");
+            viewBtn.addActionListener(ev -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Select an application first.");
+                    return;
+                }
+                showDetailsPopup("Application Details", extractRow(table, row));
+            });
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JScrollPane(table), BorderLayout.CENTER);
+            panel.add(viewBtn, BorderLayout.SOUTH);
+
+            JOptionPane.showMessageDialog(this, panel, "All Applications", JOptionPane.PLAIN_MESSAGE);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
