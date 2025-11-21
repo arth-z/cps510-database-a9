@@ -5,7 +5,7 @@ import java.sql.*;
 
 public class Recruiter_GUI extends JPanel{
 
-        public Recruiter_GUI(DB_GUI gui, String username, String password) {
+    public Recruiter_GUI(DB_GUI gui, String username, String password) {
             setLayout(new BorderLayout());
 
             JLabel title = new JLabel("Recruiter Dashboard", SwingConstants.CENTER);

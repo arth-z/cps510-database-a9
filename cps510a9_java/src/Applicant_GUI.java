@@ -701,7 +701,4 @@ public class Applicant_GUI extends JPanel{
             JOptionPane.showMessageDialog(this, "Error updating profile: " + ex.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-
-
 }

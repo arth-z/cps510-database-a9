@@ -101,7 +101,7 @@ public class Login extends JPanel {
                     int applicantID = rs.getInt(1);
                     gui.setApplicantID(applicantID);
                     System.out.println("Logged in as applicant: ID = " + applicantID);
-                    
+
                 } else if (selectedRole.equals("Company")) { 
                     String name = JOptionPane.showInputDialog(this, "Enter your company name:", "Company Login", JOptionPane.QUESTION_MESSAGE);
 
@@ -119,13 +119,12 @@ public class Login extends JPanel {
                     ResultSet rs = stmt.executeQuery();
 
                     if (!rs.next()) {
-                        JOptionPane.showMessageDialog(this, "No company found with this name.", 
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "No company found with this name.", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
                     int companyID = rs.getInt(1);
-                    gui.setApplicantID(companyID);
+                    gui.setCompanyID(companyID);
                     System.out.println("Logged in as Company: ID = " + companyID);
                 }
 
