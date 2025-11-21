@@ -57,7 +57,7 @@ public class Applicant_GUI extends  JPanel{
         browseJobs.addActionListener(e -> browseJobs());
         applyJob.addActionListener(e -> openApplyJobWindow());
         viewApps.addActionListener(e -> viewMyApplications());
-        // viewInterviews.addActionListener(e -> viewMyInterviews());
+        viewInterviews.addActionListener(e -> viewMyInterviews());
         // updateProfile.addActionListener(e -> updateMyProfile());
         exit.addActionListener(e -> System.exit(0));
     }
@@ -480,7 +480,6 @@ public class Applicant_GUI extends  JPanel{
         }
     }
 
-
     /* Shows the selected job application details */
     private void showApplicationDetails(int jobID, String jobTitle, String company, String location, String status, String dateApplied) {
 
@@ -508,13 +507,127 @@ public class Applicant_GUI extends  JPanel{
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(viewJobBtn, BorderLayout.SOUTH);
 
+        JOptionPane.showMessageDialog(this, panel, "Application Details", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    /* View interviews scheduled for the applicant */
+    private void viewMyInterviews() {
+        int applicantID = this.applicantID;
+
+        try {
+            String sql =
+                "SELECT " +
+                "    j.title AS \"Job Title\", " +
+                "    c.name AS \"Company\", " +
+                "    i.location AS \"Interview Location\", " +
+                "    TO_CHAR(i.dateTime, 'YYYY-MM-DD HH24:MI') AS \"Interview Date\", " +
+                "    a.status AS \"Application Status\", " +
+                "    j.jobID AS jobID /* hidden */ " +
+                "FROM Interview i " +
+                "JOIN JobApplication a ON i.jobAppID = a.jobAppID " +
+                "JOIN Job j ON a.jobID = j.jobID " +
+                "JOIN Company c ON j.companyID = c.companyID " +
+                "WHERE a.applicantID = ? " +
+                "ORDER BY i.dateTime ASC";
+
+            PreparedStatement stmt = dbConnection.getConnection().prepareStatement(sql);
+            stmt.setInt(1, applicantID);
+            ResultSet rs = stmt.executeQuery();
+
+            DefaultTableModel model = DB_GUI.buildTableModel(rs);
+
+            /* Read-only model */
+            DefaultTableModel readOnlyModel =
+                new DefaultTableModel(model.getDataVector(), getColumnNames(model)) {
+                    @Override public boolean isCellEditable(int r, int c) { return false; }
+                };
+
+            JTable table = new JTable(readOnlyModel);
+            table.setRowHeight(25);
+
+            /* Hide jobID column (last column) */
+            int hiddenCol = table.getColumnCount() - 1;
+            table.getColumnModel().getColumn(hiddenCol).setMinWidth(0);
+            table.getColumnModel().getColumn(hiddenCol).setMaxWidth(0);
+
+            JScrollPane scrollPane = new JScrollPane(table);
+
+            JButton viewBtn = new JButton("View Interview");
+            viewBtn.setFont(new Font("Times New Roman", Font.BOLD, 18));
+
+            viewBtn.addActionListener(ev -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Select an interview first.",
+                            "Error", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                /* Extract jobID */
+                Object val = table.getValueAt(row, hiddenCol);
+                int jobID = (val instanceof java.math.BigDecimal)
+                        ? ((java.math.BigDecimal) val).intValue()
+                        : Integer.parseInt(val.toString());
+
+                String title = table.getValueAt(row, 0).toString();
+                String company = table.getValueAt(row, 1).toString();
+                String location = table.getValueAt(row, 2).toString();
+                String date = table.getValueAt(row, 3).toString();
+                String status = table.getValueAt(row, 4).toString();
+
+                showInterviewDetails(jobID, title, company, location, date, status);
+            });
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(scrollPane, BorderLayout.CENTER);
+            panel.add(viewBtn, BorderLayout.SOUTH);
+
+            JOptionPane.showMessageDialog(
+                this,
+                panel,
+                "My Interviews",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(),
+                    "SQL Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /* Shows the selected interview details */
+    private void showInterviewDetails(int jobID, String jobTitle, String company, String location, String date, String status) {
+
+        JTextArea text = new JTextArea(
+            "Job Title: " + jobTitle + "\n" +
+            "Company: " + company + "\n" +
+            "Interview Location: " + location + "\n" +
+            "Interview Date: " + date + "\n" +
+            "Application Status: " + status + "\n"
+        );
+
+        text.setEditable(false);
+        text.setLineWrap(true);
+        text.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(text);
+        scrollPane.setPreferredSize(new Dimension(400, 250));
+
+        JButton viewJobBtn = new JButton("View Job Posting");
+        viewJobBtn.setFont(new Font("Times New Roman", Font.BOLD, 16));
+
+        viewJobBtn.addActionListener(ev -> showJobDetails(jobID));
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(viewJobBtn, BorderLayout.SOUTH);
+
         JOptionPane.showMessageDialog(
             this,
             panel,
-            "Application Details",
+            "Interview Details",
             JOptionPane.PLAIN_MESSAGE
         );
     }
-
 
 }
