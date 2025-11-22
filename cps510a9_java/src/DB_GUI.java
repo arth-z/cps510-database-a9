@@ -257,7 +257,7 @@ public class DB_GUI extends JFrame {
         cardLayout.show(mainPanel, "ApplicantUI");
     }
 
-    public void showRecruiterGUI() {
+    public void showRecruiterGUI() throws SQLException {
         JPanel recruiterPanel = new Recruiter_GUI(this, username, password);
         mainPanel.add(recruiterPanel, "RecruiterUI");
         cardLayout.show(mainPanel, "RecruiterUI");
@@ -385,7 +385,11 @@ public class DB_GUI extends JFrame {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         } break;
-                    case "Recruiter":  showRecruiterGUI(); break;
+                    case "Recruiter":  try{
+                        showRecruiterGUI(); 
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        } break;
                     case "Company":    try {
                             showCompanyGUI();
                         } catch (SQLException e) {

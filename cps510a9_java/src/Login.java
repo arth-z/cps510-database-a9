@@ -113,7 +113,7 @@ public class Login extends JPanel {
                     /* Query the database */
                     Connection connection = DBConnection.getInstance(user, pass).getConnection();
                     PreparedStatement stmt = connection.prepareStatement(
-                        "SELECT recruiterID FROM Recruiter WHERE email = ?"
+                        "SELECT recruiterID, companyID FROM Recruiter WHERE email = ?"
                     );
                     stmt.setString(1, email.trim());
                     ResultSet rs = stmt.executeQuery();
@@ -125,7 +125,9 @@ public class Login extends JPanel {
                     }
 
                     int recruiterID = rs.getInt(1);
+                    int companyID = rs.getInt(2);
                     gui.setRecruiterID(recruiterID);
+                    gui.setCompanyID(companyID); 
                     System.out.println("Logged in as recruiter: ID = " + recruiterID);
                     
                 }  else if (selectedRole.equals("Company")) { 
