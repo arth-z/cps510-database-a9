@@ -32,12 +32,9 @@ public class Company_GUI extends JPanel{
 
         JButton manageJobs = new JButton("View Company Job Listings");
         JButton manageRecruiters = new JButton("View Recruiters"); 
-        JButton viewApplicants = new JButton("View Applicants");
-        JButton scheduleInterview = new JButton("View Interviews");
-        JButton viewApps = new JButton("View Applications");
         JButton exit = new JButton("Exit");
 
-        JButton[] buttons = {manageJobs, manageRecruiters, viewApplicants, scheduleInterview, viewApps, exit};
+        JButton[] buttons = {manageJobs, manageRecruiters, exit};
 
         for (JButton b : buttons) {
             b.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -50,9 +47,6 @@ public class Company_GUI extends JPanel{
         /* Add button functionality */
         manageJobs.addActionListener(e -> viewCompanyJobs());
         manageRecruiters.addActionListener(e -> viewRecruiters());
-        viewApplicants.addActionListener(e -> viewApplicantsForCompany());
-        scheduleInterview.addActionListener(e -> viewInterviews());
-        viewApps.addActionListener(e -> viewApplications());
         exit.addActionListener(e -> System.exit(0));
 
     }
@@ -163,119 +157,6 @@ public class Company_GUI extends JPanel{
             panel.add(viewBtn, BorderLayout.SOUTH);
 
             JOptionPane.showMessageDialog(this, panel, "Company Recruiters", JOptionPane.PLAIN_MESSAGE);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
-    /* View Job Applicants for Jobs Posted by the Company */
-    private void viewApplicantsForCompany() {
-        try {
-            String sql =
-                "SELECT ja.first_name || ' ' || ja.last_name AS \"Applicant\", " +
-                "j.title AS \"Applied Job\", " +
-                "a.status AS \"Application Status\", " +
-                "TO_CHAR(a.dateTime, 'YYYY-MM-DD') AS \"Applied On\" " +
-                "FROM JobApplication a " +
-                "JOIN Job j ON a.jobID = j.jobID " +
-                "JOIN JobApplicant ja ON a.applicantID = ja.applicantID " +
-                "WHERE j.companyID = " + companyID;
-
-            ResultSet rs = dbConnection.executeQuery(sql);
-            JTable table = new JTable(readOnlyModel(rs));
-
-            JButton viewBtn = new JButton("View Selected Applicant");
-            viewBtn.addActionListener(ev -> {
-                int row = table.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(this, "Select an applicant first.");
-                    return;
-                }
-                showDetailsPopup("Applicant Details", extractRow(table, row));
-            });
-
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.add(new JScrollPane(table), BorderLayout.CENTER);
-            panel.add(viewBtn, BorderLayout.SOUTH);
-
-            JOptionPane.showMessageDialog(this, panel, "Applicants for Company Jobs", JOptionPane.PLAIN_MESSAGE);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    /* View Interviews for the Applicants that Applied for the Jobs Posted by the Company */
-    private void viewInterviews() {
-        try {
-            String sql =
-                "SELECT ja.first_name || ' ' || ja.last_name AS \"Applicant\", " +
-                "j.title AS \"Job\", " +
-                "TO_CHAR(i.dateTime, 'YYYY-MM-DD HH:MI AM') AS \"Interview Time\", " +
-                "i.location AS \"Location\" " +
-                "FROM Interview i " +
-                "JOIN JobApplication a ON i.jobAppID = a.jobAppID " +
-                "JOIN Job j ON a.jobID = j.jobID " +
-                "JOIN JobApplicant ja ON a.applicantID = ja.applicantID " +
-                "WHERE j.companyID = " + companyID;
-
-            ResultSet rs = dbConnection.executeQuery(sql);
-            JTable table = new JTable(readOnlyModel(rs));
-
-            JButton viewBtn = new JButton("View Interview Details");
-            viewBtn.addActionListener(ev -> {
-                int row = table.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(this, "Select an interview first.");
-                    return;
-                }
-                showDetailsPopup("Interview Details", extractRow(table, row));
-            });
-
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.add(new JScrollPane(table), BorderLayout.CENTER);
-            panel.add(viewBtn, BorderLayout.SOUTH);
-
-            JOptionPane.showMessageDialog(this, panel, "Interviews Scheduled", JOptionPane.PLAIN_MESSAGE);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    /* View Job Applications for the Jobs Posted by the Company */
-    private void viewApplications() {
-        try {
-            String sql =
-                "SELECT ja.first_name || ' ' || ja.last_name AS \"Applicant\", " +
-                "j.title AS \"Job Title\", " +
-                "a.status AS \"Status\", " +
-                "TO_CHAR(a.dateTime, 'YYYY-MM-DD') AS \"Applied On\" " +
-                "FROM JobApplication a " +
-                "JOIN Job j ON a.jobID = j.jobID " +
-                "JOIN JobApplicant ja ON a.applicantID = ja.applicantID " +
-                "WHERE j.companyID = " + companyID;
-
-            ResultSet rs = dbConnection.executeQuery(sql);
-            JTable table = new JTable(readOnlyModel(rs));
-
-            JButton viewBtn = new JButton("View Application Details");
-            viewBtn.addActionListener(ev -> {
-                int row = table.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(this, "Select an application first.");
-                    return;
-                }
-                showDetailsPopup("Application Details", extractRow(table, row));
-            });
-
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.add(new JScrollPane(table), BorderLayout.CENTER);
-            panel.add(viewBtn, BorderLayout.SOUTH);
-
-            JOptionPane.showMessageDialog(this, panel, "All Applications", JOptionPane.PLAIN_MESSAGE);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
