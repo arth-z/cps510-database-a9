@@ -372,6 +372,8 @@ public class Recruiter_GUI extends JPanel{
         }
     }
 
+
+//Displays upcoming interviews for the recruiter's job applications
     private void viewUpcomingInterviews() {
          try {
             String sql =
@@ -390,6 +392,7 @@ public class Recruiter_GUI extends JPanel{
             ResultSet rs = dbConnection.executeQuery(sql);
             JTable table = new JTable(readOnlyModel(rs));
 
+            //Button to view detailed information about the interview
             JButton viewBtn = new JButton("View Interview Details");
             viewBtn.addActionListener(ev -> {
                 int row = table.getSelectedRow();
@@ -411,6 +414,7 @@ public class Recruiter_GUI extends JPanel{
         }
     }
 
+    //Displays every applicant who has applied to the recruiter's job postings
     private void viewApplicants() {
         try {
             String sql =
