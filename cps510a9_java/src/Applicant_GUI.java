@@ -34,16 +34,13 @@ public class Applicant_GUI extends JPanel{
         JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         Color LightBlue = new Color(173, 216, 230);
 
-        JButton browseJobs = new JButton("Browse Jobs");
         JButton applyJob = new JButton("Apply for a Job");
         JButton viewApps = new JButton("View My Applications");
         JButton viewInterviews = new JButton("View Interviews");
         JButton updateProfile = new JButton("Update Profile");
         JButton exit = new JButton("Exit");
 
-        JButton[] buttons = {
-            browseJobs, applyJob, viewApps, viewInterviews, updateProfile, exit
-        };
+        JButton[] buttons = {applyJob, viewApps, viewInterviews, updateProfile, exit};
 
         for (JButton b : buttons) {
             b.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -54,113 +51,12 @@ public class Applicant_GUI extends JPanel{
         add(buttonPanel, BorderLayout.CENTER);
 
         /* Button functionality */
-        browseJobs.addActionListener(e -> browseJobs());
         applyJob.addActionListener(e -> openApplyJobWindow());
         viewApps.addActionListener(e -> viewMyApplications());
         viewInterviews.addActionListener(e -> viewMyInterviews());
         updateProfile.addActionListener(e -> openUpdateProfileWindow());
         exit.addActionListener(e -> System.exit(0));
     }
-
-    private void browseJobs() {
-        try {
-            String sql =
-                "SELECT j.jobID, j.title AS \"Job Title\", c.name AS \"Company\", j.location AS \"Location\", " +
-                "j.salary AS \"Salary ($/hr)\", j.workingHours AS \"Hours/Week\", " +
-                "TO_CHAR(j.datePosted, 'YYYY-MM-DD') AS \"Date Posted\", j.description AS \"Description\" " +
-                "FROM Job j " +
-                "JOIN Company c ON j.companyID = c.companyID " +
-                "ORDER BY j.datePosted DESC";
-
-            ResultSet rs = dbConnection.executeQuery(sql);
-            DefaultTableModel model = DB_GUI.buildTableModel(rs);
-
-            /* Read-only */
-            Vector<String> columnNames = new Vector<>();
-            for (int i = 0; i < model.getColumnCount(); i++) {
-                columnNames.add(model.getColumnName(i));
-            }
-
-            DefaultTableModel readOnlyModel = new DefaultTableModel(model.getDataVector(), columnNames) {
-                @Override
-                public boolean isCellEditable(int row, int column) { return false; }
-            };
-
-            JTable table = new JTable(readOnlyModel);
-            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            table.setRowHeight(25);
-
-            /* Hide jobID column */
-            table.getColumnModel().getColumn(0).setMinWidth(0);
-            table.getColumnModel().getColumn(0).setMaxWidth(0);
-            table.getColumnModel().getColumn(0).setWidth(0);
-
-            /* Create a panel for the table + buttons */
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.add(new JScrollPane(table), BorderLayout.CENTER);
-
-            JPanel buttonPanel = new JPanel(new FlowLayout());
-
-            JButton viewButton = new JButton("View Selected Job");
-            JButton closeButton = new JButton("Close");
-
-            buttonPanel.add(viewButton);
-            buttonPanel.add(closeButton);
-            panel.add(buttonPanel, BorderLayout.SOUTH);
-
-            /* Create a dialog */
-            JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Available Jobs", true);
-            dialog.setContentPane(panel);
-            dialog.setSize(800, 500);
-            dialog.setLocationRelativeTo(this);
-
-            /* Handle button click */
-            viewButton.addActionListener(ev -> {
-                int row = table.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(dialog, "Please select a job first.");
-                    return;
-                }
-                
-                Object value = table.getValueAt(row, 0);
-                int jobID;
-
-                if (value instanceof Integer) {
-                    jobID = (Integer) value;
-                } else if (value instanceof BigDecimal) {
-                    jobID = ((BigDecimal) value).intValue();
-                } else {
-                    throw new RuntimeException("Unknown ID type: " + value.getClass());
-                }
-
-                dialog.dispose();
-                showJobDetails(jobID);
-            });
-
-            /* Handle double-click */
-            table.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    if (evt.getClickCount() == 2) {
-                        int row = table.getSelectedRow();
-                        if (row != -1) {
-                            int jobID = (int) table.getValueAt(row, 0);
-                            dialog.dispose();
-                            showJobDetails(jobID);
-                        }
-                    }
-                }
-            });
-
-            /* Close button */
-            closeButton.addActionListener(ev -> dialog.dispose());
-
-            dialog.setVisible(true);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
 
     private void showJobDetails(int jobID) {
         try {
